@@ -6,3 +6,5 @@ Project Management Tool 🍣
 
 - Django
 - Nextjs
+- PostgreSQL
+- TypeScript
