@@ -8,3 +8,4 @@ Project Management Tool 🍣
 - Nextjs
 - PostgreSQL
 - TypeScript
+- Redis
