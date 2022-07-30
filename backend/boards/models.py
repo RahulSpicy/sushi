@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 from users.models import User
 
@@ -23,8 +24,11 @@ class List(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.order:
-            self.order = List.objects.filter(board=self.board).count() + 1
+        filtered_objects = List.objects.filter(board=self.board)
+        if not self.order and filtered_objects.count() == 0:
+            self.order = 1
+        elif not self.order:
+            self.order = filtered_objects.aggregate(Max("order"))["order__max"] + 1
         return super().save(*args, **kwargs)
 
 
@@ -40,8 +44,11 @@ class Item(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.order:
-            self.order = Item.objects.filter(list=self.list).count() + 1
+        filtered_objects = Item.objects.filter(list=self.list)
+        if not self.order and filtered_objects.count() == 0:
+            self.order = 1
+        elif not self.order:
+            self.order = filtered_objects.aggregate(Max("order"))["order__max"] + 1
         return super().save(*args, **kwargs)
 
 
