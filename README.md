@@ -9,3 +9,4 @@ Project Management Tool 🍣
 - PostgreSQL
 - TypeScript
 - Redis
+- Django REST Framework

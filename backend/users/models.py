@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from django.core.validators import RegexValidator
 
-# Create your models here.
+
 class CustomUserManager(UserManager):
     def get_by_natural_key(self, username):
         case_insensitive_username_field = "{}__iexact".format(self.model.USERNAME_FIELD)
@@ -32,8 +33,20 @@ class CustomUserManager(UserManager):
         return super(CustomUserManager, self).get(**kwargs)
 
 
+username_validator = RegexValidator(
+    r"^[a-zA-Z0-9_\.]*$",
+    "Only alphanumeric characters, underscores, and periods are allowed in your username.",
+)
+
+
 class User(AbstractUser):
-    username = models.CharField(max_length=15, blank=False, null=False, unique=True)
+    username = models.CharField(
+        max_length=15,
+        blank=False,
+        null=False,
+        unique=True,
+        validators=[username_validator],
+    )
     email = models.EmailField(max_length=255, blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=255, blank=False, null=False)
     last_name = models.CharField(max_length=255, blank=False, null=False)
