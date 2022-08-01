@@ -11,7 +11,9 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=False)
     profile_picture = models.ImageField(blank=True, upload_to="project_profile_pics")
     created_at = models.DateTimeField(default=timezone.now)
-    members = models.ManyToManyField(User, through="ProjectMembership")
+    members = models.ManyToManyField(
+        User, through="ProjectMembership", through_fields=("project", "member")
+    )
 
     def __str__(self):
         return self.title
@@ -19,16 +21,11 @@ class Project(models.Model):
 
 class ProjectMembership(models.Model):
     class Access(models.IntegerChoices):
-        BASE = 1  # Can view and create and move only own items
-        INTERMEDIATE = 2  # Can create lists and move others items.
-        OWNER = 3  # Can perform destructive actions on other's items.
+        MEMBER = 1  # Can view and create and move only own items
+        ADMIN = 2  # Can remove members and modify project settings.
 
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="memberships"
-    )
-    member = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="memberships"
-    )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    member = models.ForeignKey(User, on_delete=models.CASCADE)
     access_level = models.IntegerField(choices=Access.choices)
     created_at = models.DateTimeField(default=timezone.now)
 

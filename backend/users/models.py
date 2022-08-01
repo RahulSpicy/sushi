@@ -40,7 +40,7 @@ username_validator = RegexValidator(
 
 
 class User(AbstractUser):
-    username = models.CharField(
+    username = models.TextField(
         max_length=15,
         blank=False,
         null=False,

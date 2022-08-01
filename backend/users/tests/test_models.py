@@ -1,7 +1,7 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.test import Client
 from mixer.backend.django import mixer
-from django.core.exceptions import ValidationError
 
 from ..models import User
 
@@ -14,12 +14,12 @@ class TestUserModel:
         assert user.pk == 1
 
     def test_username_case_insensitive(self):
-        user = mixer.blend(User, username="cookie")
-        assert User.objects.get(username="COokie") == user
+        user = mixer.blend(User, username="john")
+        assert User.objects.get(username="JOhn") == user
 
     def test_username_case_insensitive2(self):
-        user = mixer.blend(User, username="cookie")
-        assert User.objects.filter(username="COokie").count() == 1
+        user = mixer.blend(User, username="john")
+        assert User.objects.filter(username="JOhn").count() == 1
 
     def test_email_case_insensitive(self):
         user = mixer.blend(User, email="johndoe@gmail.com")
