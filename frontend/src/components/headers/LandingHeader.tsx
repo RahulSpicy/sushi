@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import logo from "../../../images/logo.png";
+import logo from "../../images/logo.png";
 import { btn } from "../../styles";
 
 const LandingPageHeader = styled.header`

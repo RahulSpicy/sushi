@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import bg1 from "../../images/bg1.jpg";
+import bg1 from "../images/bg1.jpg";
 import { LandingHeader } from "../components/headers/LandingHeader";
 import { btn } from "../styles";
 
