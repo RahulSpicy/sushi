@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import CreateTeamModal from "../components/modals/CreateTeamModal";
 import Landing from "./Landing";
 const Index = () => {
-  return <Landing />;
+  const [showTeamModal, setShowTeamModal] = useState(true);
+  return <CreateTeamModal setShowModal={setShowTeamModal} />;
 };
 
 export default Index;
