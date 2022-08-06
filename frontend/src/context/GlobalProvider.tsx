@@ -7,6 +7,11 @@ interface GlobalProviderProps {
   children: React.ReactNode;
 }
 
+interface loginProps {
+  access: string;
+  refresh: string;
+}
+
 const GlobalProvider = (props: GlobalProviderProps) => {
   const router = useRouter();
   const [globalState, dispatch] = useReducer(globalReducer, {
@@ -14,7 +19,9 @@ const GlobalProvider = (props: GlobalProviderProps) => {
     synced: false,
   });
 
-  const login = (resData: any) => {
+  const login = (resData: loginProps) => {
+    localStorage.setItem("accessToken", resData.access);
+    localStorage.setItem("refreshToken", resData.refresh);
     dispatch({ type: LOGIN });
   };
 

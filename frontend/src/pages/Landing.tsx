@@ -2,8 +2,9 @@ import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import bg1 from "../images/bg1.jpg";
+import { useRouter } from "next/router";
 import { LandingHeader } from "../components/headers/LandingHeader";
+import bg1 from "../images/bg1.jpg";
 import { btn } from "../styles";
 
 const Banner = styled.div`
@@ -21,6 +22,12 @@ const BannerContent = styled.div`
 `;
 
 const Landing = () => {
+  const router = useRouter();
+
+  const handleClick = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    router.push("/login");
+  };
   return (
     <>
       <LandingHeader />
@@ -60,7 +67,9 @@ const Landing = () => {
               Sushi boards, lists, and cards enable you to organize and
               prioritize your projects in a fun, flexible, and rewarding way.
             </h4>
-            <Button className={btn}>Sign Up For Free</Button>
+            <Button onClick={handleClick} className={btn}>
+              Sign Up For Free
+            </Button>
           </BannerContent>
         </div>
       </Banner>
