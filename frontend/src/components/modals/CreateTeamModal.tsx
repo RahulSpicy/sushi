@@ -5,11 +5,16 @@ import { Button, TextareaAutosize } from "@mui/material";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import board from "../../images/board.svg";
-import greenface from "../../images/greenface.svg";
 
 interface CreateTeamModalProps {
   setShowModal: (showModal: boolean) => void;
 }
+
+type FormData = {
+  name: string;
+  description: string;
+  members: string[];
+};
 
 const CreateTeam = styled.div`
   z-index: 4;
@@ -20,7 +25,6 @@ const CreateTeam = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 925px;
-
   display: flex;
 `;
 
@@ -51,16 +55,6 @@ color: #838282
 margin-bottom: 1.5em;
 `;
 
-const faceImg = css`
-  position: absolute;
-  transition: all 100ms ease;
-
-  &--1 {
-    left: -100px;
-    top: 460px;
-  }
-`;
-
 const fal = css`
   position: fixed;
   top: 20px;
@@ -74,7 +68,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ setShowModal }) => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+  } = useForm<FormData>();
 
   const nameValue: String = watch("name", "");
 
@@ -92,10 +86,9 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ setShowModal }) => {
           boards in one location.
         </SubTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Label>Project Name</Label>
+          <Label htmlFor="name">Project Name</Label>
           <TextareaAutosize
-            name="name"
-            // ref={register({ required: true })}
+            {...register("name")}
             required
             placeholder="The Boys"
             style={{
@@ -105,10 +98,9 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ setShowModal }) => {
               resize: "none",
             }}
           />
-          <Label>Project Description</Label>
+          <Label htmlFor="description">Project Description</Label>
           <TextareaAutosize
-            name="description"
-            // ref={register}
+            {...register("description")}
             placeholder="Get your members on board with a few words about your project"
             style={{
               resize: "none",
@@ -119,10 +111,9 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ setShowModal }) => {
             }}
           />
 
-          <Label>Invite Members</Label>
+          <Label htmlFor="members">Invite Members</Label>
           <TextareaAutosize
-            name="members"
-            // ref={register}
+            {...register("members")}
             placeholder="Type in username or email"
             style={{
               padding: "0.5em",
@@ -167,20 +158,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ setShowModal }) => {
         <Button onClick={() => setShowModal(false)}>
           <CloseIcon className={fal} />
         </Button>
-        <Image
-          src={board}
-          alt="board"
-          width={400}
-          height={500}
-          style={{ margin: "0 auto", marginTop: "40px" }}
-        />
-        <Image
-          src={greenface}
-          alt="face"
-          className={faceImg}
-          height={70}
-          width={70}
-        />
+        <Image src={board} alt="board" width={400} height={500} />
       </CreateTeamBg>
     </CreateTeam>
   );
