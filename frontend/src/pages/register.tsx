@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import Image from "next/image";
-import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
 import SlideshowLayout from "../components/auth/SlideshowLayout";
 import logo from "../images/logo.png";
 
@@ -20,10 +20,6 @@ const LeftSidebar = styled(Sidebar)`
   left: 0;
 `;
 
-// const RightSidebar = styled(Sidebar)`
-//   right: 0;
-// `;
-
 const LogoContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -32,14 +28,14 @@ const LogoContainer = styled.div`
   height: 20%;
 `;
 
-const LoginContainer = styled.div`
+const RegisterContainer = styled.div`
   width: 100%;
   margin: 2% auto;
   justify-content: center;
   text-align: center;
 `;
 
-const Login = () => {
+const Register = () => {
   return (
     <>
       <LeftSidebar>
@@ -49,17 +45,13 @@ const Login = () => {
             SUSHI
           </Typography>
         </LogoContainer>
-        <LoginContainer>
-          <LoginForm />
-        </LoginContainer>
+        <RegisterContainer>
+          <RegisterForm />
+        </RegisterContainer>
       </LeftSidebar>
       <SlideshowLayout />
     </>
   );
 };
 
-// Login.defaultProps = {
-//   login: false,
-// };
-
-export default Login;
+export default Register;

@@ -7,7 +7,7 @@ import Header from "../components/headers/Header";
 
 const Index = () => {
   const [showTeamModal, setShowTeamModal] = useState(true);
-  return <Header />;
+  return <Landing />;
 };
 
 export default Index;

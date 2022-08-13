@@ -40,6 +40,10 @@ username_validator = RegexValidator(
 )
 
 
+def upload_to(instance, filename):
+    return "profile_pics/{filename}".format(filename=filename)
+
+
 class User(AbstractUser):
     username = models.TextField(
         max_length=15,
@@ -51,7 +55,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=255, blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=255, blank=False, null=False)
     last_name = models.CharField(max_length=255, blank=False, null=False)
-    profile_pic = models.ImageField(blank=True, upload_to="profile_pics")
+    profile_pic = models.ImageField(blank=True, null=True, upload_to=upload_to)
     boards = GenericRelation(
         "boards.Board",
         related_query_name="owner",

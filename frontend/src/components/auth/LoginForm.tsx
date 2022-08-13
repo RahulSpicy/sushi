@@ -24,7 +24,7 @@ const LoginForm = () => {
     try {
       const res = await axios.post(url, data);
       login(res.data);
-      router.push("/");
+      router.push({ pathname: "/" });
     } catch (err: any) {
       if (err.response?.status === 401) {
         console.log("Invalid Credentials");

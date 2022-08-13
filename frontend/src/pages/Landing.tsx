@@ -26,8 +26,9 @@ const Landing = () => {
 
   const handleClick = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    router.push("/login");
+    router.push({ pathname: "/login" });
   };
+
   return (
     <>
       <LandingHeader />
