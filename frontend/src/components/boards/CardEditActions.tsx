@@ -8,6 +8,11 @@ import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import { Chip, Stack, Typography } from "@mui/material";
 import MemberListItem from "./MemberListItem";
 
+const user = {
+  full_name: "Hrushikesh Jadhav",
+  profile_pic: "",
+};
+
 const chipStyle = css`
   border-radius: 5px;
   color: gray;
@@ -71,7 +76,7 @@ const CardEditActions = () => {
         Members
       </Typography>
       <Stack direction="column" spacing={1} width="80%" alignItems="start">
-        <MemberListItem />
+        <MemberListItem user={user} />
       </Stack>
     </CardSideBar>
   );

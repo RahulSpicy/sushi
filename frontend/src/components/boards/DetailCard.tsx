@@ -15,16 +15,20 @@ import {
 } from "@mui/material";
 import React from "react";
 import EditableField from "../common/EditableField";
+import EditableTextField from "../common/EditableTextField";
 import CardEditActions from "./CardEditActions";
 import Labels from "./Labels";
+import moment from "moment";
 
 const cardData = {
   image: "",
   labels: ["red"],
   title: "The Boys",
+  description: "Blah blah blah",
   attachments: [],
   assigned_to: ["Sushi"],
   list: "Important",
+  date: "20220523",
 };
 
 const DetailCard = () => {
@@ -62,6 +66,7 @@ const DetailCard = () => {
               <p style={{ fontSize: "12px" }}>
                 in list <b style={{ fontWeight: "600" }}>{cardData.list}</b>
               </p>
+              <p>{moment(cardData.date, "YYYYMMDD").fromNow()}</p>
               <LogoTextContainer>
                 <DescriptionOutlinedIcon style={{ color: "gray" }} />
                 <Typography
@@ -75,20 +80,8 @@ const DetailCard = () => {
                   Description
                 </Typography>
               </LogoTextContainer>
-              <TextareaAutosize
-                placeholder="Add description"
-                maxRows={3}
-                style={{
-                  resize: "none",
-                  width: "95%",
-                  height: "50px",
-                  padding: "0.5em",
-                  margin: "0.25em",
-                  border: "1px solid white",
-                  borderRadius: "5px",
-                  backgroundColor: "#f0f1f2",
-                }}
-              />
+              <EditableTextField desc={cardData.description} />
+
               <LogoTextContainer>
                 <AttachmentOutlinedIcon style={{ color: "gray" }} />
                 <Typography
@@ -105,7 +98,7 @@ const DetailCard = () => {
                   variant="outlined"
                   startIcon={<AddIcon />}
                   size="small"
-                  color="success"
+                  color="secondary"
                   style={{ marginLeft: "25px" }}
                 >
                   Add
@@ -137,7 +130,7 @@ const DetailCard = () => {
         sx={{ top: "20px", right: "20px", height: "30px", width: "30px" }}
       >
         <IconButton>
-          <CloseIcon sx={{ fontSize: "20px" }}/>
+          <CloseIcon sx={{ fontSize: "20px" }} />
         </IconButton>
       </CardActions>
     </React.Fragment>
