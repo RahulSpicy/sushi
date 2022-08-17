@@ -26,7 +26,7 @@ const Landing = () => {
 
   const handleClick = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    router.push({ pathname: "/login" });
+    router.push({ pathname: "/register" });
   };
 
   return (

@@ -1,7 +1,7 @@
-import { Button, TextField } from "@mui/material";
+import { Alert, Button, Snackbar, TextField } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import globalContext from "../../context/globalContext";
 import { backendUrl } from "../../utils/const";
@@ -14,6 +14,8 @@ type FormData = {
 const LoginForm = () => {
   const router = useRouter();
   const { register, handleSubmit, watch } = useForm<FormData>();
+  const [errmsgs, setErrMsgs] = useState({ msgs: "", err: false });
+  const [open, setOpen] = useState(false);
 
   const userName = watch("username", "");
   const userPassword = watch("password", "");
@@ -24,12 +26,26 @@ const LoginForm = () => {
     try {
       const res = await axios.post(url, data);
       login(res.data);
+      console.log(res.data);
       router.push({ pathname: "/" });
     } catch (err: any) {
       if (err.response?.status === 401) {
-        console.log("Invalid Credentials");
+        setOpen(true);
+        setErrMsgs({ msgs: "Invalid Username or Password", err: true });
+        console.log(errmsgs);
       }
     }
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -58,9 +74,9 @@ const LoginForm = () => {
           margin: "0.5em auto",
           height: "3em",
           width: "60%",
-          zIndex: "1",
         }}
       />
+
       {userName.trim() !== "" && userPassword.trim() !== "" ? (
         <Button
           variant="contained"
@@ -92,6 +108,13 @@ const LoginForm = () => {
           Login
         </Button>
       )}
+      {errmsgs.err ? (
+        <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            {errmsgs.msgs}
+          </Alert>
+        </Snackbar>
+      ) : null}
     </form>
   );
 };

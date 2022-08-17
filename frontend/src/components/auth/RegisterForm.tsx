@@ -1,4 +1,4 @@
-import { Button, Input, TextField } from "@mui/material";
+import { Alert, Button, Input, TextField } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -24,6 +24,7 @@ const RegisterForm = () => {
   const router = useRouter();
 
   const [profilePic, setProfilePic] = useState(null);
+  const [errmsgs, setErrMsgs] = useState({ msgs: {}, err: false });
 
   const handleImageChange = (e: any) => {
     let newData = e.target.files[0];
@@ -43,9 +44,15 @@ const RegisterForm = () => {
       router.push({ pathname: "/" });
     } catch (err: any) {
       if (err.response?.status === 400) {
-        console.log("Bad Request");
+        setErrMsgs({ err: true, msgs: err.response.data });
+
+        console.log(errmsgs);
       }
     }
+  };
+
+  const capitalize = (s) => {
+    return s[0].toUpperCase() + s.slice(1).toLowerCase();
   };
 
   return (
@@ -169,6 +176,18 @@ const RegisterForm = () => {
           Register
         </Button>
       )}
+
+      {errmsgs.err
+        ? Object.keys(errmsgs.msgs).map((m) => (
+            <Alert
+              key={m}
+              severity="error"
+              sx={{ width: "80%", marginLeft: "30px" }}
+            >
+              {capitalize(errmsgs.msgs[m].toString())}
+            </Alert>
+          ))
+        : null}
     </form>
   );
 };
