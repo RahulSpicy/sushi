@@ -2,7 +2,7 @@ import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { LandingHeader } from "../components/headers/LandingHeader";
 import bg1 from "../images/bg1.jpg";
 import { btn } from "../styles";
@@ -22,13 +22,6 @@ const BannerContent = styled.div`
 `;
 
 const Landing = () => {
-  const router = useRouter();
-
-  const handleClick = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    router.push({ pathname: "/register" });
-  };
-
   return (
     <>
       <LandingHeader />
@@ -56,7 +49,7 @@ const Landing = () => {
                 margin-bottom: 0.5em;
               `}
             >
-              Sushi lets you work more collaboratively and get more done
+              Sushi helps teams move work forward
             </h1>
             <h4
               className={css`
@@ -65,12 +58,13 @@ const Landing = () => {
                 font-weight: 500;
               `}
             >
-              Sushi boards, lists, and cards enable you to organize and
-              prioritize your projects in a fun, flexible, and rewarding way.
+              Start with a Sushi board, lists, and cards. Customize and expand
+              with more features as your teamwork grows. Manage projects,
+              organize tasks, and build team spirit—all in one place.
             </h4>
-            <Button onClick={handleClick} className={btn}>
-              Sign Up For Free
-            </Button>
+            <Link href="/register">
+              <Button className={btn}>Start doing</Button>
+            </Link>
           </BannerContent>
         </div>
       </Banner>

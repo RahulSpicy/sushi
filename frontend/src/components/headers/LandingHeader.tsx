@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import logo from "../../images/logo.png";
 import { btn } from "../../styles";
+import Link from "next/link";
 
 const LandingPageHeader = styled.header`
   position: fixed;
@@ -83,10 +84,14 @@ export const LandingHeader: React.FC<LandingHeaderProps> = () => {
       <Section>
         <HeaderList>
           <HeaderListItem>
-            <a>Login</a>
+            <Link href="/login">
+              <a style={{ textDecoration: "none", color: "white" }}>Login</a>
+            </Link>
           </HeaderListItem>
           <HeaderListItem>
-            <Button className={btn}>Sign Up</Button>
+            <Link href="/register">
+              <Button className={btn}>Sign Up</Button>
+            </Link>
           </HeaderListItem>
         </HeaderList>
       </Section>

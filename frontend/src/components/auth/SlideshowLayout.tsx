@@ -46,7 +46,7 @@ const SlideshowLayout = () => {
       </div>
       <SplashTextContainer>
         <Splashtext>Plan your tasks</Splashtext>
-        <p>Plan out your tasks and vacations using Sushi</p>
+        <p>With Sushi it’s more than work. It’s a way of working together.</p>
       </SplashTextContainer>
     </Slideshow>
   );
