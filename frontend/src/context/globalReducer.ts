@@ -1,12 +1,12 @@
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 
-export const globalReducer = (state: any, action: { type: any }) => {
+export const globalReducer = (state: any, action: any) => {
   switch (action.type) {
     case LOGIN:
-      return { ...state, authenticated: true, checkedAuth: true };
+      return { ...state, user: action.user, checkedAuth: true };
     case LOGOUT:
-      return { ...state, authenticated: false, checkedAuth: true };
+      return { ...state, user: null, checkedAuth: true };
     default:
       return state;
   }

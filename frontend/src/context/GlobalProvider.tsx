@@ -2,6 +2,8 @@ import React, { useReducer } from "react";
 import { useRouter } from "next/router";
 import { globalReducer, LOGIN, LOGOUT } from "./globalReducer";
 import globalContext from "./globalContext";
+import { backendUrl } from "../utils/const";
+import { authAxios } from "../utils/authAxios";
 
 interface GlobalProviderProps {
   children: React.ReactNode;
@@ -15,26 +17,42 @@ interface loginProps {
 const GlobalProvider = (props: GlobalProviderProps) => {
   const router = useRouter();
   const [globalState, dispatch] = useReducer(globalReducer, {
-    authenticated: false,
-    synced: false,
+    user: null,
+    checkedAuth: false,
   });
 
-  const login = (resData: loginProps) => {
+  const login = async (resData: loginProps) => {
     localStorage.setItem("accessToken", resData.access);
     localStorage.setItem("refreshToken", resData.refresh);
-    dispatch({ type: LOGIN });
+    const url = backendUrl + "/me/";
+
+    // No try catch block so error bubbles up to LoginForm to be handled there
+    const { data: user } = await authAxios.get(url);
+    dispatch({ type: LOGIN, user });
+    router.push("/");
+  };
+
+  const checkAuth = async () => {
+    const url = backendUrl + "/me/";
+    try {
+      const { data: user } = await authAxios.get(url);
+      dispatch({ type: LOGIN, user });
+    } catch (err) {
+      dispatch({ type: LOGOUT });
+    }
   };
 
   const logout = () => {
     dispatch({ type: LOGOUT });
-    router.push("/");
+    router.push("/login");
   };
 
   return (
     <globalContext.Provider
       value={{
-        authenticated: globalState.authenticated,
-        synced: globalState.synced,
+        user: globalState.user,
+        checkedAuth: globalState.checkedAuth,
+        checkAuth,
         login,
         logout,
       }}

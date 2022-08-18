@@ -1,11 +1,11 @@
 import React from "react";
 
 interface GlobalContextInterface {
-  authenticated: boolean;
+  user: string;
   checkedAuth: boolean;
 }
 
 export default React.createContext<GlobalContextInterface | any>({
-  authenticated: false,
+  user: null,
   checkedAuth: false, // Whether your auth has been checked or not
 });

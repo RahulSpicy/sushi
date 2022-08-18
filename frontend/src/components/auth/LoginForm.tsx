@@ -1,6 +1,5 @@
 import { Alert, Button, Snackbar, TextField } from "@mui/material";
 import axios from "axios";
-import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import globalContext from "../../context/globalContext";
@@ -12,7 +11,6 @@ type FormData = {
 };
 
 const LoginForm = () => {
-  const router = useRouter();
   const { register, handleSubmit, watch } = useForm<FormData>();
   const [errmsgs, setErrMsgs] = useState({ msgs: "", err: false });
   const [open, setOpen] = useState(false);
@@ -26,8 +24,6 @@ const LoginForm = () => {
     try {
       const res = await axios.post(url, data);
       login(res.data);
-      console.log(res.data);
-      router.push({ pathname: "/" });
     } catch (err: any) {
       if (err.response?.status === 401) {
         setOpen(true);
