@@ -5,7 +5,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   AppBar,
   Autocomplete,
-  Avatar,
   Button,
   Divider,
   IconButton,
@@ -15,8 +14,10 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import globalContext from "../../context/globalContext";
 import logo from "../../images/logo.png";
+import MemberListItem from "../boards/MemberListItem";
 
 const top100Films = [
   { title: "The Shawshank Redemption", year: 1994 },
@@ -48,6 +49,7 @@ const top100Films = [
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const { user } = useContext(globalContext);
 
   useEffect(() => {
     if (searchQuery !== "") setShowSearch(true);
@@ -116,18 +118,9 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          <Avatar
-            sx={{
-              backgroundColor: "lightcoral",
-              borderRadius: "5px",
-              marginLeft: "10px",
-            }}
-            variant="square"
-          >
-            H
-          </Avatar>
+          <MemberListItem user={user} header="true" />
           <Typography ml={1} fontSize="15px" color="gray">
-            Hello, Hrushikesh
+            Hello, {user.full_name.replace(/ .*/, "")}
           </Typography>
           <IconButton sx={{ marginLeft: "40px", marginRight: "20px" }}>
             <NotificationsOutlinedIcon style={{ color: "gray" }} />

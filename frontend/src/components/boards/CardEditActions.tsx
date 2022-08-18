@@ -76,7 +76,7 @@ const CardEditActions = () => {
         Members
       </Typography>
       <Stack direction="column" spacing={1} width="80%" alignItems="start">
-        <MemberListItem user={user} />
+        <MemberListItem user={user} header="false" />
       </Stack>
     </CardSideBar>
   );

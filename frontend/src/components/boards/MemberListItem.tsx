@@ -1,4 +1,5 @@
-import { Avatar, dialogClasses, Typography } from "@mui/material";
+import { Avatar, Typography } from "@mui/material";
+import { backendUrl } from "../../utils/const";
 
 const hashName = (str): any => {
   let res = 0;
@@ -15,7 +16,7 @@ const getNameColor = (name) => {
   return colors[hashName(name) % colors.length];
 };
 
-const MemberListItem = ({ user }) => {
+const MemberListItem = ({ user, header }) => {
   return (
     <div
       style={{
@@ -27,7 +28,7 @@ const MemberListItem = ({ user }) => {
       {user.profile_pic ? (
         <Avatar
           variant="square"
-          src={user.profile_pic}
+          src={`${backendUrl}${user.profile_pic}`}
           sx={{
             width: 35,
             height: 35,
@@ -45,9 +46,11 @@ const MemberListItem = ({ user }) => {
           {user.full_name.substring(0, 1)}
         </Avatar>
       )}
-      <Typography style={{ fontSize: "14px", marginLeft: "5px" }} noWrap>
-        {user.full_name}
-      </Typography>
+      {header == "true" ? null : (
+        <Typography style={{ fontSize: "14px", marginLeft: "5px" }} noWrap>
+          {user.full_name}
+        </Typography>
+      )}
     </div>
   );
 };

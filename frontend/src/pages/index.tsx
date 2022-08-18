@@ -19,7 +19,11 @@ const Index = () => {
   }
 
   // const [showTeamModal, setShowTeamModal] = useState(true);
-  return <>{user ? <p>Logged In</p> : <Landing />}</>;
+  return (
+    <>
+      {user && <Header />} {!user && <Landing />}
+    </>
+  );
 };
 
 export default Index;

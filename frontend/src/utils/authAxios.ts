@@ -25,7 +25,7 @@ authAxios.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const url = backendUrl + "/token/refresh";
+        const url = backendUrl + "/token/refresh/";
         const refreshToken = localStorage.getItem("refreshToken");
         const { data: resData } = await axios.post(url, {
           refresh: refreshToken,

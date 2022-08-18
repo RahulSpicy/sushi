@@ -1,12 +1,13 @@
-# sushi
+# Sushi 🍣
 
-Project Management Tool 🍣
+Project Management Tool(Trello Clone)
 
 ### Stack
 
 - Django
-- Nextjs
+- NextJs
 - PostgreSQL
 - TypeScript
 - Redis
 - Django REST Framework
+- Material UI
