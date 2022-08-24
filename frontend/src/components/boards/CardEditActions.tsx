@@ -5,9 +5,9 @@ import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
-import { Chip, Stack, Typography, Popover } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import LabelModal from "../modals/LabelModal";
+import LabelPopOver from "../modals/LabelPopOver";
 import MemberListItem from "./MemberListItem";
 
 const user = {
@@ -34,9 +34,6 @@ const CardEditActions = () => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
 
   return (
     <CardSideBar>
@@ -95,22 +92,10 @@ const CardEditActions = () => {
       <Stack direction="column" spacing={1} width="80%" alignItems="start">
         <MemberListItem user={user} header="false" />
       </Stack>
-      <Popover
-        id={id}
-        open={open}
+      <LabelPopOver
+        handleClosePopover={handleClosePopover}
         anchorEl={anchorEl}
-        onClose={handleClosePopover}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
-        <LabelModal setShowModal={true} />
-      </Popover>
+      />
     </CardSideBar>
   );
 };

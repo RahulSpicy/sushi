@@ -39,7 +39,7 @@ const Index = () => {
         <>
           <Header />
           <Button onClick={handleOpen}>Open modal</Button>
-          <LabelModal />
+
           <Card setOpen={open} handleClose={handleClose} cardData={card} />
         </>
       )}{" "}

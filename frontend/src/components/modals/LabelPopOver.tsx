@@ -1,11 +1,11 @@
+import { Popover, Button, IconButton, Input, Typography } from "@mui/material";
+import { useState, useRef } from "react";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
-import { Button, IconButton, Input, Typography } from "@mui/material";
-import { useRef, useState } from "react";
 
 const colors = [
   { backgroundColor: "#0079bf" },
@@ -73,7 +73,10 @@ const CreateBlock = styled.ul`
 
 const zipWith3 = (xs, ys, zs, f) => xs.map((n, i) => f(n, ys[i], zs[i]));
 
-const LabelModal = ({ setShowModal }) => {
+const LabelPopOver = ({ anchorEl, handleClosePopover }) => {
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   const [showCreateLabel, setShowCreateLabel] = useState(false);
   const labelElem = useRef(null);
   const [liId, setLiId] = useState(-1);
@@ -93,7 +96,20 @@ const LabelModal = ({ setShowModal }) => {
   );
 
   return (
-    <>
+    <Popover
+      id={id}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClosePopover}
+      anchorOrigin={{
+        vertical: "center",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "left",
+      }}
+    >
       {showCreateLabel ? (
         <CreateLabel
           labelElem={labelElem}
@@ -151,7 +167,7 @@ const LabelModal = ({ setShowModal }) => {
           </ColorListContainer>
         </div>
       </LabelContainer>
-    </>
+    </Popover>
   );
 };
 
@@ -251,4 +267,4 @@ const CreateLabel = ({
   );
 };
 
-export default LabelModal;
+export default LabelPopOver;
