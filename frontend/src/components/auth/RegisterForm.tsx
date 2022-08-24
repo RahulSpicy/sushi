@@ -45,8 +45,12 @@ const RegisterForm = () => {
     } catch (err: any) {
       if (err.response?.status === 400) {
         setErrMsgs({ err: true, msgs: err.response.data });
-
         console.log(errmsgs);
+      } else {
+        setErrMsgs({
+          err: true,
+          msgs: { Connection: "Refused", Server: "Maybe Down" },
+        });
       }
     }
   };

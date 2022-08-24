@@ -1,63 +1,67 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import AttachmentOutlinedIcon from "@mui/icons-material/AttachmentOutlined";
-import CloseIcon from "@mui/icons-material/Close";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import {
+  Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
   Grid,
   IconButton,
+  Modal,
   TextareaAutosize,
   Typography,
 } from "@mui/material";
-import React from "react";
 import EditableField from "../common/EditableField";
 import EditableTextField from "../common/EditableTextField";
 import CardEditActions from "./CardEditActions";
 import Labels from "./Labels";
-import moment from "moment";
+import { useState } from "react";
 
-const cardData = {
-  image: "",
-  labels: ["red"],
-  title: "The Boys",
-  description: "Blah blah blah",
-  attachments: [],
-  assigned_to: ["Sushi"],
-  list: "Important",
-  date: "20220523",
-};
+interface CardProps {
+  setOpen: boolean;
+  handleClose: (open: boolean) => void;
+  cardData: any;
+}
 
-const DetailCard = () => {
-  const CardContainer = styled(Card)`
-    z-index: 4;
-    background-color: white;
-    border-radius: 5px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 850px;
-    display: flex;
-  `;
+const CardContainer = styled(Box)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 55%;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+`;
 
-  const CardContentSide = styled.div`
-    padding: 0.5em 0 0.5em 0.5em;
-  `;
+const CardContentSide = styled.div`
+  padding: 0.5em 0 0.5em 0.5em;
+`;
 
-  const LogoTextContainer = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  `;
+const LogoTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+`;
 
-  const card = (
-    <React.Fragment>
-      <CardContent sx={{ width: "100%" }}>
+const CloseContainer = styled.div`
+  display: flex;
+`;
+
+const Card: React.FC<CardProps> = ({ setOpen, handleClose, cardData }) => {
+  return (
+    <Modal open={setOpen} onClose={handleClose}>
+      <CardContainer>
+        <CloseContainer>
+          <IconButton
+            sx={{ height: "30px", width: "30px", marginLeft: "auto" }}
+            // onClick={handleClose}
+          >
+            <CloseIcon sx={{ fontSize: "20px" }} />
+          </IconButton>
+        </CloseContainer>
         <Grid container spacing={1}>
           <Grid item xs={9}>
             <CardContentSide>
@@ -66,7 +70,6 @@ const DetailCard = () => {
               <p style={{ fontSize: "12px" }}>
                 in list <b style={{ fontWeight: "600" }}>{cardData.list}</b>
               </p>
-              <p>{moment(cardData.date, "YYYYMMDD").fromNow()}</p>
               <LogoTextContainer>
                 <DescriptionOutlinedIcon style={{ color: "gray" }} />
                 <Typography
@@ -125,17 +128,9 @@ const DetailCard = () => {
             <CardEditActions />
           </Grid>
         </Grid>
-      </CardContent>
-      <CardActions
-        sx={{ top: "20px", right: "20px", height: "30px", width: "30px" }}
-      >
-        <IconButton>
-          <CloseIcon sx={{ fontSize: "20px" }} />
-        </IconButton>
-      </CardActions>
-    </React.Fragment>
+      </CardContainer>
+    </Modal>
   );
-  return <CardContainer variant="outlined">{card}</CardContainer>;
 };
 
-export default DetailCard;
+export default Card;
