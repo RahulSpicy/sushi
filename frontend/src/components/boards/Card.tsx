@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import AttachmentOutlinedIcon from "@mui/icons-material/AttachmentOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import EditableField from "../common/EditableField";
 import EditableTextField from "../common/EditableTextField";
 import CardEditActions from "./CardEditActions";
 import Labels from "./Labels";
-import { useState } from "react";
 
 interface CardProps {
   setOpen: boolean;
@@ -98,11 +97,13 @@ const Card: React.FC<CardProps> = ({ setOpen, handleClose, cardData }) => {
                   Attachments
                 </Typography>
                 <Button
-                  variant="outlined"
                   startIcon={<AddIcon />}
                   size="small"
-                  color="secondary"
-                  style={{ marginLeft: "25px" }}
+                  style={{
+                    marginLeft: "40px",
+                    backgroundColor: "#ebebeb",
+                    color: "gray",
+                  }}
                 >
                   Add
                 </Button>

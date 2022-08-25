@@ -1,11 +1,11 @@
-import { Popover, Button, IconButton, Input, Typography } from "@mui/material";
-import { useState, useRef } from "react";
 import { css } from "@emotion/css";
 import styled from "@emotion/styled";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
+import { Button, IconButton, Input, Popover, Typography } from "@mui/material";
+import { useRef, useState } from "react";
 
 const colors = [
   { backgroundColor: "#0079bf" },
@@ -30,19 +30,17 @@ const ColorListContainer = styled.ul`
 `;
 
 const ColorList = styled.li`
-  margin: 0.3em 1.2em;
+  margin: 0.2em 1.2em;
   height: 2.5em;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
   align-items: center;
 `;
 
 const ColorListItem = styled.p`
   border-radius: 0.2em;
-  height: 100%;
+  height: 60%;
   width: 90%;
-  padding-top: 0.8em;
   text-align: center;
   color: white;
 `;
@@ -118,55 +116,59 @@ const LabelPopOver = ({ anchorEl, handleClosePopover }) => {
           setLiContent={setLiContent}
           liId={liId}
         />
-      ) : null}
-      <LabelContainer ref={labelElem}>
-        <HeaderContainer>
-          <Typography variant="body1">Labels</Typography>
-          <IconButton>
-            <CloseOutlinedIcon />
-          </IconButton>
-        </HeaderContainer>
-        <div>
-          <ColorListContainer>
-            {liContent.map((x, index) => (
-              <ColorList key={index}>
-                <ColorListItem
-                  onClick={() => {
-                    setLiContent((it) => {
-                      return it.map((item, idx) => {
-                        let nitem;
-                        if (idx === index) {
-                          nitem = { ...item };
-                          nitem.checked = !item.checked;
-                          return nitem;
-                        }
-                        return item;
+      ) : (
+        <LabelContainer ref={labelElem}>
+          <HeaderContainer>
+            <Typography variant="body1">Labels</Typography>
+            <IconButton>
+              <CloseOutlinedIcon />
+            </IconButton>
+          </HeaderContainer>
+          <div>
+            <ColorListContainer>
+              {liContent.map((x, index) => (
+                <ColorList key={index}>
+                  <ColorListItem
+                    onClick={() => {
+                      setLiContent((it) => {
+                        return it.map((item, idx) => {
+                          let nitem;
+                          if (idx === index) {
+                            nitem = { ...item };
+                            nitem.checked = !item.checked;
+                            return nitem;
+                          }
+                          return item;
+                        });
                       });
-                    });
-                  }}
-                  style={x.style}
-                >
-                  {x.content}
-                  {x.checked ? (
-                    <CheckOutlinedIcon
-                      style={{ float: "right", marginRight: "0.6em" }}
-                    />
-                  ) : null}
-                </ColorListItem>
-                <IconButton
-                  onClick={() => {
-                    setShowCreateLabel(true);
-                    setLiId(index);
-                  }}
-                  style={{ marginLeft: "1em" }}
-                >
-                  <CreateOutlinedIcon />
-                </IconButton>
-              </ColorList>
-            ))}
-          </ColorListContainer>
-        </div>
-      </LabelContainer>
+                    }}
+                    style={x.style}
+                  >
+                    {x.content}
+                    {x.checked ? (
+                      <CheckOutlinedIcon
+                        style={{
+                          float: "right",
+                          marginRight: "0.6em",
+                        }}
+                      />
+                    ) : null}
+                  </ColorListItem>
+                  <IconButton
+                    onClick={() => {
+                      setShowCreateLabel(true);
+                      setLiId(index);
+                    }}
+                    style={{ marginLeft: "1em" }}
+                  >
+                    <CreateOutlinedIcon />
+                  </IconButton>
+                </ColorList>
+              ))}
+            </ColorListContainer>
+          </div>
+        </LabelContainer>
+      )}
     </Popover>
   );
 };
@@ -224,19 +226,21 @@ const CreateLabel = ({
                   className={
                     color === x
                       ? css`
-                          filter: brightness(80%);
+                          filter: brightness(90%);
                         `
                       : ""
                   }
                   onClick={() => setColor(x)}
                   style={x}
                 >
-                  {color === x ? <CheckOutlinedIcon /> : null}
+                  {color === x ? (
+                    <CheckOutlinedIcon style={{ color: "white" }} />
+                  ) : null}
                 </Button>
               </li>
             );
           })}
-          <li
+          {/* <li
             style={{
               marginBottom: "0.5em",
               marginRight: "0.7em",
@@ -244,7 +248,7 @@ const CreateLabel = ({
             }}
           >
             <Button>No Color</Button>
-          </li>
+          </li> */}
         </CreateBlock>
       </div>
       <Button
@@ -259,6 +263,8 @@ const CreateLabel = ({
           alignSelf: "center",
           width: "60%",
           fontWeight: "600",
+          marginTop: "10px",
+          marginBottom: "20px",
         }}
       >
         Create

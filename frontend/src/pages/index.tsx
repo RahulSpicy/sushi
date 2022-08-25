@@ -15,7 +15,7 @@ const card = {
   assigned_to: [],
   attachments: [],
   comments: [],
-  description: "hahahahah",
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
 };
 
 const Index = () => {
