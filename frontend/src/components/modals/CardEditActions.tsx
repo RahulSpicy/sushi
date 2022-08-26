@@ -7,8 +7,8 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import { Chip, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import LabelPopOver from "../modals/LabelPopOver";
-import MemberListItem from "./MemberListItem";
+import LabelPopOver from "./LabelPopOver";
+import MemberListItem from "../boards/MemberListItem";
 
 const user = {
   full_name: "Hrushikesh Jadhav",

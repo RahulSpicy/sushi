@@ -56,7 +56,7 @@ const HomeSidebar = () => {
           <ListItem disablePadding sx={{ justifyContent: "space-between" }}>
             <Typography margin={2}>Projects</Typography>
             <IconButton edge="end">
-              <AddIcon color="primary" />
+              <AddIcon />
             </IconButton>
           </ListItem>
           <ListItem disablePadding>

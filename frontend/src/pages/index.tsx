@@ -1,28 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
-import HomeSidebar from "../components/sidebars/HomeSidebar";
 import Landing from "./Landing";
+import Home from "./home";
 import Header from "../components/headers/Header";
 import globalContext from "../context/globalContext";
 import Login from "./login";
-import Card from "../components/boards/Card";
-import { Button } from "@mui/material";
-import LabelModal from "../components/modals/LabelModal";
+import DetailCard from "../components/boards/DetailCard";
 
 const card = {
   title: "Sansh",
   labels: ["Urgent"],
   assigned_to: [],
-  attachments: [],
+  attachments: ["abc.jpg"],
   comments: [],
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
 };
 
 const Index = () => {
   const { checkAuth, checkedAuth, user } = useContext(globalContext);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     checkAuth();
@@ -38,11 +33,9 @@ const Index = () => {
       {user && (
         <>
           <Header />
-          <Button onClick={handleOpen}>Open modal</Button>
-
-          <Card setOpen={open} handleClose={handleClose} cardData={card} />
+          <DetailCard cardData={card} />
         </>
-      )}{" "}
+      )}
       {!user && <Landing />}
     </>
   );

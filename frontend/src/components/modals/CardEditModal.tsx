@@ -15,9 +15,9 @@ import {
 import EditableField from "../common/EditableField";
 import EditableTextField from "../common/EditableTextField";
 import CardEditActions from "./CardEditActions";
-import Labels from "./Labels";
+import Labels from "../boards/Labels";
 
-interface CardProps {
+interface CardEditModalProps {
   setOpen: boolean;
   handleClose: (open: boolean) => void;
   cardData: any;
@@ -49,7 +49,11 @@ const CloseContainer = styled.div`
   display: flex;
 `;
 
-const Card: React.FC<CardProps> = ({ setOpen, handleClose, cardData }) => {
+const CardEditModal: React.FC<CardEditModalProps> = ({
+  setOpen,
+  handleClose,
+  cardData,
+}) => {
   return (
     <Modal open={setOpen} onClose={handleClose}>
       <CardContainer>
@@ -134,4 +138,4 @@ const Card: React.FC<CardProps> = ({ setOpen, handleClose, cardData }) => {
   );
 };
 
-export default Card;
+export default CardEditModal;
