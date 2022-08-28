@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-import { IconButton, Typography } from "@mui/material";
-import HomeSidebar from "../components/sidebars/HomeSidebar";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { IconButton, Typography } from "@mui/material";
+import HomeBoard from "../components/boards/HomeBoard";
+import HomeSidebar from "../components/sidebars/HomeSidebar";
 
 const HomeWrapper = styled.div`
   display: flex;
@@ -53,19 +54,23 @@ const Home = () => {
             </Typography>
           </div>
         </HomeSection>
-        <HomeBoards>here</HomeBoards>
+        <HomeBoards>
+          <HomeBoard />
+        </HomeBoards>
         <HomeSection>
           <div style={{ display: "flex", alignItems: "center" }}>
             <PersonOutlineOutlinedIcon />
             <Typography fontWeight={400} variant="h6" ml={1}>
               Personal Boards
-            </Typography>{" "}
+            </Typography>
           </div>
           <IconButton>
             <AddOutlinedIcon />
           </IconButton>
         </HomeSection>
-        <HomeBoards>here</HomeBoards>
+        <HomeBoards>
+          <HomeBoard />
+        </HomeBoards>
       </div>
     </HomeWrapper>
   );

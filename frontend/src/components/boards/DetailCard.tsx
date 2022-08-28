@@ -81,6 +81,7 @@ const Members = ({ members }) => (
     style={{
       display: "flex",
       justifyContent: "flex-end",
+      alignItems: "center",
       marginTop: "0.5em",
     }}
   >
@@ -96,8 +97,8 @@ const Members = ({ members }) => (
     >
       <AddOutlinedIcon />
     </IconButton>
-    {members.map((member) => (
-      <MemberListItem user={member} key={uuidv4()} header="false" />
+    {members.slice(0, 3).map((member) => (
+      <MemberListItem user={member} key={uuidv4()} header="true" />
     ))}
   </div>
 );

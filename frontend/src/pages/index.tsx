@@ -10,7 +10,28 @@ import DetailCard from "../components/boards/DetailCard";
 const card = {
   title: "Sansh",
   labels: ["Urgent"],
-  assigned_to: [],
+  assigned_to: [
+    {
+      id: "1",
+      full_name: "Sushi",
+      image: "",
+    },
+    {
+      id: "2",
+      full_name: "Cookie Monster",
+      image: "",
+    },
+    {
+      id: "3",
+      full_name: "Raze",
+      image: "",
+    },
+    {
+      id: "4",
+      full_name: "Jett",
+      image: "",
+    },
+  ],
   attachments: ["abc.jpg"],
   comments: [],
   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",

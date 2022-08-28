@@ -46,6 +46,7 @@ const MemberListItem = ({ user, header }) => {
           {user.full_name.substring(0, 1)}
         </Avatar>
       )}
+
       {header == "true" ? null : (
         <Typography style={{ fontSize: "14px", marginLeft: "5px" }} noWrap>
           {user.full_name}
