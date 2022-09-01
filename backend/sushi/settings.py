@@ -176,3 +176,7 @@ SWAGGER_SETTINGS = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+REDIS_HOST = "localhost"
+REDIS_PORT = 6380
+REDIS_DB = 0

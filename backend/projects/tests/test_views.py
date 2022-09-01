@@ -49,10 +49,10 @@ class TestProjectDetail:
         (user1, user2, proj) = make_proj_user
         client = APIClient()
         client.force_authenticate(user=user2)
-        response = client.get("/projects/1")
+        response = client.get("/projects/1/")
         assert response.status_code == 403
         client.force_authenticate(user=user1)
-        response = client.get("/projects/1")
+        response = client.get("/projects/1/")
         assert response.status_code == 200
 
     def test_put_permission(self, make_proj_user):
@@ -61,11 +61,10 @@ class TestProjectDetail:
         client.force_authenticate(user=user2)
         modproj = ProjectSerializer(proj).data
         del modproj["owner"]
-        del modproj["profile_picture"]
-        response = client.put("/projects/1", modproj)
+        response = client.put("/projects/1/", modproj)
         assert response.status_code == 403
         client.force_authenticate(user=user1)
-        response = client.put("/projects/1", modproj)
+        response = client.put("/projects/1/", modproj)
         assert response.status_code == 200
 
     def test_put_inconsistent(self, make_proj):
@@ -74,17 +73,17 @@ class TestProjectDetail:
         client.force_authenticate(user=user1)
         req = ProjectSerializer(proj).data
         req["owner"] = 3
-        response = client.put("/projects/1", req)
+        response = client.put("/projects/1/", req)
         assert response.status_code == 400
 
     def test_delete_permission(self, make_proj_user):
         (user1, user2, proj) = make_proj_user
         client = APIClient()
         client.force_authenticate(user=user2)
-        response = client.delete("/projects/1")
+        response = client.delete("/projects/1/")
         assert response.status_code == 403
         client.force_authenticate(user=user1)
-        response = client.delete("/projects/1")
+        response = client.delete("/projects/1/")
         assert response.status_code == 200
 
     def test_authenticated(self):
@@ -92,17 +91,17 @@ class TestProjectDetail:
         proj = mixer.blend(Project, owner=user1)
         client = APIClient()
         client.force_authenticate(user=mixer.blend(User))
-        response = client.get("/projects/1")
+        response = client.get("/projects/1/")
         assert response.status_code == 403
         client.force_authenticate(user=user1)
-        response = client.get("/projects/1")
+        response = client.get("/projects/1/")
         assert response.status_code == 200
 
     def test_get_consistent(self, make_proj):
         (user1, proj) = make_proj
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.get("/projects/1")
+        response = client.get("/projects/1/")
         assert response.data == ProjectSerializer(proj).data
 
     def test_put_consistent(self, make_proj):
@@ -111,15 +110,14 @@ class TestProjectDetail:
         client.force_authenticate(user=user1)
         modproj = ProjectSerializer(proj).data
         del modproj["owner"]
-        del modproj["profile_picture"]
-        response = client.put("/projects/1", modproj)
+        response = client.put("/projects/1/", modproj)
         assert response.data == ProjectSerializer(proj).data
 
     def test_delete_consistent(self, make_proj):
         (user1, proj) = make_proj
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.delete("/projects/1")
+        response = client.delete("/projects/1/")
         assert response.data is None
 
 
@@ -134,11 +132,11 @@ class TestProjectMember:
         (user1, proj) = make_proj
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.get("/projects/1/members")
+        response = client.get("/projects/1/members/")
         assert response.status_code == 200
         user2 = mixer.blend(User)
         client.force_authenticate(user2)
-        response = client.get("/projects/1/members")
+        response = client.get("/projects/1/members/")
         assert response.status_code == 200
 
     def test_owner_put(self, make_proj):
@@ -146,7 +144,7 @@ class TestProjectMember:
         pmem = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.put("/projects/1/members/1", {"access_level": 2})
+        response = client.put("/projects/1/members/1/", {"access_level": 2})
         assert response.data["access_level"] == 2
 
     def test_admin_put(self, make_proj):
@@ -155,7 +153,7 @@ class TestProjectMember:
         pmem2 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.put("/projects/1/members/2", {"access_level": 2})
+        response = client.put("/projects/1/members/2/", {"access_level": 2})
         assert response.data["access_level"] == 2
 
     def test_unauth_put(self, make_proj):
@@ -163,7 +161,7 @@ class TestProjectMember:
         pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.put("/projects/1/members/1", {"access_level": 2})
+        response = client.put("/projects/1/members/1/", {"access_level": 2})
         assert response.status_code == 403
 
     def test_owner_delete(self, make_proj):
@@ -171,7 +169,7 @@ class TestProjectMember:
         pmem = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.delete("/projects/1/members/1")
+        response = client.delete("/projects/1/members/1/")
         assert response.status_code == 204
 
     def test_admin_delete(self, make_proj):
@@ -180,7 +178,7 @@ class TestProjectMember:
         pmem2 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.delete("/projects/1/members/2")
+        response = client.delete("/projects/1/members/2/")
         assert response.status_code == 204
 
     def test_unauth_delete(self, make_proj):
@@ -188,7 +186,7 @@ class TestProjectMember:
         pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.delete("/projects/1/members/1")
+        response = client.delete("/projects/1/members/1/")
         assert response.status_code == 403
 
     def test_put_inconsistent(self, make_proj):
@@ -198,14 +196,14 @@ class TestProjectMember:
         client.force_authenticate(user1)
         modproj = ProjectMembershipSerializer(pmem1).data
         modproj["access_level"] = 3
-        response = client.put("/projects/1/members/1", modproj, format="json")
+        response = client.put("/projects/1/members/1/", modproj, format="json")
         assert response.status_code == 400
 
     def test_project_members_get(self, make_proj):
         (user1, proj) = make_proj
         pmem1 = mixer.blend(ProjectMembership, project=proj)
         client = APIClient()
-        response = client.get("/projects/2/members")
+        response = client.get("/projects/2/members/")
         assert response.status_code == 404
 
 
@@ -222,25 +220,20 @@ class TestProjectInvite:
         client = APIClient()
         client.force_authenticate(owner)
         response = client.post(
-            "/projects/1/invite", {"users": [user2.username]}, format="json"
+            "/projects/1/invite/", {"users": [user2.username]}, format="json"
         )
         assert response.status_code == 204
         assert len(mailoutbox) == 1
 
         activation_link = mailoutbox[0].body.split(" ")[-1]
         token = activation_link.split("/")[-1]
-        pidb64 = activation_link.split("/")[-2]
-        usernameb64 = activation_link.split("/")[-3]
         client.force_authenticate(user2)
 
         assert (
             ProjectMembership.objects.filter(project=project, member=user2).exists()
             == False
         )
-        response = client.post(
-            "/projects/join",
-            {"usernameb64": usernameb64, "pidb64": pidb64, "token": token},
-        )
+        response = client.post(f"/projects/join/{token}/")
 
         assert response.status_code == 204
         assert ProjectMembership.objects.filter(project=project, member=user2).exists()
@@ -249,7 +242,7 @@ class TestProjectInvite:
         (owner, project) = make_proj
         client = APIClient()
         client.force_authenticate(owner)
-        response = client.post("/projects/1/invite")
+        response = client.post("/projects/1/invite/")
         assert response.status_code == 400
         assert "No users provided" in response.data["error"]
 
@@ -259,22 +252,14 @@ class TestProjectInvite:
         client = APIClient()
         client.force_authenticate(owner)
         response = client.post(
-            "/projects/1/invite", {"users": [user2.username]}, format="json"
+            "/projects/1/invite/", {"users": [user2.username]}, format="json"
         )
 
         activation_link = mailoutbox[0].body.split(" ")[-1]
         token = activation_link.split("/")[-1]
-        pidb64 = activation_link.split("/")[-2]
-        usernameb64 = activation_link.split("/")[-3]
         client.force_authenticate(user2)
 
-        response = client.post(
-            "/projects/join",
-            {"usernameb64": usernameb64, "pidb64": pidb64, "token": token},
-        )
-        response = client.post(
-            "/projects/join",
-            {"usernameb64": usernameb64, "pidb64": pidb64, "token": token},
-        )
+        response = client.post(f"/projects/join/{token}/")
+        response = client.post(f"/projects/join/{token}/")
 
         assert response.status_code == 400

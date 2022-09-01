@@ -1,9 +1,9 @@
-import React, { useReducer } from "react";
 import { useRouter } from "next/router";
-import { globalReducer, LOGIN, LOGOUT } from "./globalReducer";
-import globalContext from "./globalContext";
-import { backendUrl } from "../utils/const";
+import React, { useReducer } from "react";
 import { authAxios } from "../utils/authAxios";
+import { backendUrl } from "../utils/const";
+import globalContext from "./globalContext";
+import { globalReducer, LOGIN, LOGOUT } from "./globalReducer";
 
 interface GlobalProviderProps {
   children: React.ReactNode;

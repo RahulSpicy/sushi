@@ -34,7 +34,7 @@ const BoardLists = styled.div`
 `;
 
 const Board = (props) => {
-  //   const { id } = props.match.params;
+  // const { id } = props.match.params;
   const board = {
     title: "Hello World",
     project: "The Boys",

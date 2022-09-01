@@ -9,9 +9,7 @@ import HomeSidebar from "../components/sidebars/HomeSidebar";
 const HomeWrapper = styled.div`
   display: flex;
   background-color: #f6f7fb;
-  padding: 100px 200px 0;
-  width: 100vw;
-  min-height: 100vh;
+  padding: 55px 120px;
   height: 100%;
 `;
 
@@ -19,33 +17,20 @@ const HomeSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5em;
+  margin-bottom: 1.25em;
 `;
 
 const HomeBoards = styled.div`
-display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 1em;
-        > .board-preview {
-            margin: 0 1em 1.5em;
-            width: calc(25% - 1.5em);
-
-            &:nth-of-type(4n + 1) {
-                margin-left: 0;
-            }
-
-            &:nth-of-type(4n) {
-                margin-right: 0;
-            }
-        }
-    }
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
 `;
 
 const Home = () => {
   return (
     <HomeWrapper>
       <HomeSidebar />
-      <div style={{ flex: 5, paddingLeft: "1.5em" }}>
+      <div style={{ flex: 5, marginLeft: "50px" }}>
         <HomeSection>
           <div style={{ display: "flex", alignItems: "center" }}>
             <AccessTimeOutlinedIcon />

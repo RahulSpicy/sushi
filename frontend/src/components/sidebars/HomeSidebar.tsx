@@ -14,8 +14,14 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
+import CreateProjectModal from "../modals/CreateTeamModal";
 
 const HomeSidebar = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Box
       sx={{
@@ -55,9 +61,10 @@ const HomeSidebar = () => {
         <List>
           <ListItem disablePadding sx={{ justifyContent: "space-between" }}>
             <Typography margin={2}>Projects</Typography>
-            <IconButton edge="end">
+            <IconButton edge="end" onClick={handleOpen}>
               <AddIcon />
             </IconButton>
+            <CreateProjectModal setOpen={open} handleClose={handleClose} />
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton>

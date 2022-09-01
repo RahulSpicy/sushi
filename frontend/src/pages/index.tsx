@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import CreateTeamModal from "../components/modals/CreateTeamModal";
 import Landing from "./Landing";
-import Home from "./home";
+import Home from "./Home";
 import Header from "../components/headers/Header";
 import globalContext from "../context/globalContext";
 import Login from "./login";
 import DetailCard from "../components/boards/DetailCard";
+import { Button } from "@mui/material";
 
 const card = {
   title: "Sansh",
@@ -48,13 +48,14 @@ const Index = () => {
     return null;
   }
 
-  // const [showTeamModal, setShowTeamModal] = useState(true);
   return (
     <>
       {user && (
         <>
           <Header />
-          <DetailCard cardData={card} />
+          <Home />
+
+          {/* <DetailCard cardData={card} /> */}
         </>
       )}
       {!user && <Landing />}

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import bg1 from "../../images/bg1.jpg";
 import MemberListItem from "./MemberListItem";
+import Link from "next/link";
 
 const board = {
   id: "1",
@@ -52,35 +53,37 @@ const BoardPreviewImage = styled.div`
 
 const HomeBoard = () => {
   return (
-    <BoardPreview>
-      <IconButton
-        sx={{
-          top: "3px",
-          right: "3px",
-          position: "absolute",
-          zIndex: 1,
-        }}
-      >
-        <StarBorderIcon sx={{ color: "white" }} />
-      </IconButton>
-      <BoardPreviewImage>
-        <Image
-          src={board.image}
-          alt="img"
-          width="220px"
-          height="105px"
-          objectFit="cover"
-          style={{ borderRadius: "5px 5px 0 0" }}
-        />
-      </BoardPreviewImage>
-      <Typography
-        variant="body1"
-        style={{ marginBottom: board.members ? "0.75em" : 0 }}
-      >
-        {board.title}
-      </Typography>
-      {board.members && <Members members={board.members} />}
-    </BoardPreview>
+    <Link href={`/board`}>
+      <BoardPreview>
+        <IconButton
+          sx={{
+            top: "3px",
+            right: "3px",
+            position: "absolute",
+            zIndex: 1,
+          }}
+        >
+          <StarBorderIcon sx={{ color: "white" }} />
+        </IconButton>
+        <BoardPreviewImage>
+          <Image
+            src={board.image}
+            alt="img"
+            width="220px"
+            height="105px"
+            objectFit="cover"
+            style={{ borderRadius: "5px 5px 0 0" }}
+          />
+        </BoardPreviewImage>
+        <Typography
+          variant="body1"
+          style={{ marginBottom: board.members ? "0.75em" : 0 }}
+        >
+          {board.title}
+        </Typography>
+        {board.members && <Members members={board.members} />}
+      </BoardPreview>
+    </Link>
   );
 };
 
