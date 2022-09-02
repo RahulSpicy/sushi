@@ -3,7 +3,9 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { IconButton, Typography } from "@mui/material";
+import { useState } from "react";
 import HomeBoard from "../components/boards/HomeBoard";
+import AddBoardModal from "../components/modals/AddBoardModal";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
 
 const HomeWrapper = styled.div`
@@ -27,6 +29,9 @@ const HomeBoards = styled.div`
 `;
 
 const Home = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <HomeWrapper>
       <HomeSidebar />
@@ -49,9 +54,10 @@ const Home = () => {
               Personal Boards
             </Typography>
           </div>
-          <IconButton>
+          <IconButton onClick={handleOpen}>
             <AddOutlinedIcon />
           </IconButton>
+          <AddBoardModal setOpen={open} handleClose={handleClose} />
         </HomeSection>
         <HomeBoards>
           <HomeBoard />
