@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Box, Button, IconButton, Input, Modal } from "@mui/material";
 import { useState } from "react";
+import BoardBackground from "./BoardBackground";
 
 interface AddBoardModalProps {
   setOpen: boolean;
@@ -64,7 +65,7 @@ const ModalContainer = styled(Box)`
   top: 30px;
   right: 0;
   display: flex;
-  left: 25%;
+  left: 30%;
   position: fixed;
 `;
 
@@ -124,6 +125,15 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
     )
   );
   const [title, setTitle] = useState("");
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
   return (
     <Modal open={setOpen} onClose={handleClose}>
       <ModalContainer>
@@ -189,9 +199,13 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
               ) : null}
             </ColorBoxButton>
           ))}
-          <ColorBoxButton>
+          <ColorBoxButton onClick={handleClick}>
             <MoreHorizIcon />
           </ColorBoxButton>
+          <BoardBackground
+            handleClosePopover={handleClosePopover}
+            anchorEl={anchorEl}
+          />
         </div>
       </ModalContainer>
     </Modal>

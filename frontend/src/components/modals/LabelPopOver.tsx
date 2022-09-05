@@ -7,6 +7,11 @@ import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeft
 import { Button, IconButton, Input, Popover, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 
+interface LabelPopOverProps {
+  anchorEl: HTMLElement | null;
+  handleClosePopover: () => void;
+}
+
 const colors = [
   { backgroundColor: "#0079bf" },
   { backgroundColor: "#70b500" },
@@ -71,7 +76,10 @@ const CreateBlock = styled.ul`
 
 const zipWith3 = (xs, ys, zs, f) => xs.map((n, i) => f(n, ys[i], zs[i]));
 
-const LabelPopOver = ({ anchorEl, handleClosePopover }) => {
+const LabelPopOver: React.FC<LabelPopOverProps> = ({
+  anchorEl,
+  handleClosePopover,
+}) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
