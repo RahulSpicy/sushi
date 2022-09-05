@@ -3,7 +3,7 @@ import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Box, Button, IconButton, Input, Modal } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import BoardBackground from "./BoardBackground";
 
 interface AddBoardModalProps {
@@ -125,6 +125,9 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
     )
   );
   const [title, setTitle] = useState("");
+  const [showBoardModal, setShowBoardModal] = useState(false);
+  const cardElem = useRef(null);
+
   const handleClosePopover = () => {
     setAnchorEl(null);
   };
@@ -133,6 +136,8 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
+    setShowBoardModal(true);
+    setBackground(bgImage(event.currentTarget.value));
   };
   return (
     <Modal open={setOpen} onClose={handleClose}>
@@ -185,7 +190,7 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
             </Button>
           )}
         </div>
-        <div style={{ marginLeft: "0.5em", width: "250px" }}>
+        <div style={{ marginLeft: "0.5em", width: "250px" }} ref={cardElem}>
           {options.map((option, index) => (
             <ColorBoxButton
               key={index}
@@ -202,11 +207,15 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
           <ColorBoxButton onClick={handleClick}>
             <MoreHorizIcon />
           </ColorBoxButton>
+        </div>
+        {showBoardModal ? (
           <BoardBackground
             handleClosePopover={handleClosePopover}
             anchorEl={anchorEl}
+            setShowBoardModal={setShowBoardModal}
+            setBackground={setBackground}
           />
-        </div>
+        ) : null}
       </ModalContainer>
     </Modal>
   );

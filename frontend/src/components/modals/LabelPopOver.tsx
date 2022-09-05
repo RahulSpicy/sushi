@@ -6,24 +6,12 @@ import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import { Button, IconButton, Input, Popover, Typography } from "@mui/material";
 import { useRef, useState } from "react";
+import { colors } from "../../utils/const";
 
 interface LabelPopOverProps {
   anchorEl: HTMLElement | null;
   handleClosePopover: () => void;
 }
-
-const colors = [
-  { backgroundColor: "#0079bf" },
-  { backgroundColor: "#70b500" },
-  { backgroundColor: "#ff9f1a" },
-  { backgroundColor: "#eb5a46" },
-  { backgroundColor: "#f2d600" },
-  { backgroundColor: "#c377e0" },
-  { backgroundColor: "#ff78cb" },
-  { backgroundColor: "#00c2e0" },
-  { backgroundColor: "#51e898" },
-  { backgroundColor: "#c4c9cc" },
-];
 
 const ColorListContainer = styled.ul`
   overflow-x: hidden;

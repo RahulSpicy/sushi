@@ -2,12 +2,14 @@ import styled from "@emotion/styled";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { Button, IconButton, Popover, Typography } from "@mui/material";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { colors, images } from "../../utils/const";
 
 interface BoardBackgroundProps {
   anchorEl: HTMLElement | null;
   handleClosePopover: () => void;
+  setShowBoardModal: Dispatch<SetStateAction<boolean>>;
+  setBackground: any;
 }
 
 const BoardBackgroundContainer = styled.div`
@@ -61,11 +63,14 @@ const ColorBoxButton = styled(Button)`
 const BoardBackground: React.FC<BoardBackgroundProps> = ({
   anchorEl,
   handleClosePopover,
+  setShowBoardModal,
+  setBackground,
 }) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   const [selected, setSelected] = useState({});
+
   return (
     <Popover
       id={id}
@@ -85,7 +90,7 @@ const BoardBackground: React.FC<BoardBackgroundProps> = ({
       <BoardBackgroundContainer>
         <HeaderContainer>
           <Typography variant="body1">Board Background</Typography>
-          <IconButton>
+          <IconButton onClick={() => setShowBoardModal(false)}>
             <CloseOutlinedIcon />
           </IconButton>
         </HeaderContainer>
@@ -126,6 +131,28 @@ const BoardBackground: React.FC<BoardBackgroundProps> = ({
           </CreateBlock>
         </div>
       </BoardBackgroundContainer>
+      <Button
+        onClick={() => {
+          setShowBoardModal(false);
+          if (
+            selected.backgroundColor === undefined &&
+            selected.backgroundImage === undefined
+          )
+            return;
+          else setBackground(selected);
+        }}
+        variant="outlined"
+        style={{
+          alignSelf: "center",
+          width: "60%",
+          fontWeight: "600",
+          marginTop: "20px",
+          marginBottom: "20px",
+          marginLeft: "55px",
+        }}
+      >
+        Select Background
+      </Button>
     </Popover>
   );
 };
