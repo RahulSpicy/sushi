@@ -6,7 +6,13 @@ from rest_framework import serializers
 
 class ProjectSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
-    members = UserSerializer(read_only=True, many=True)
+    members = serializers.SerializerMethodField()
+
+    def get_members(self, obj):
+        queryset = ProjectMembership.objects.filter(project=obj)
+        return ProjectMembershipSerializer(
+            queryset, many=True, context={"request": self.context["request"]}
+        ).data
 
     class Meta:
         model = Project
@@ -15,10 +21,18 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):
-    project = serializers.CharField(source="project.title", read_only=True)
-    member = UserSerializer(read_only=True)
+    full_name = serializers.CharField(source="member.full_name", read_only=True)
+    username = serializers.CharField(source="member.username", read_only=True)
+    email = serializers.CharField(source="member.email", read_only=True)
+    profile_pic = serializers.SerializerMethodField()
+
+    def get_profile_pic(self, obj):
+        if obj.member.profile_pic:
+            return self.context["request"].build_absolute_uri(
+                obj.member.profile_pic.url
+            )
+        return None
 
     class Meta:
         model = ProjectMembership
-        fields = ["id", "project", "member", "access_level"]
-        read_only_fields = ["project", "member"]
+        fields = ["id", "full_name", "username", "email", "profile_pic", "access_level"]

@@ -17,7 +17,7 @@ const Label = styled.label`
   margin-bottom: 0.3em;
 `;
 
-const CreateTeamForm = () => {
+const CreateTeamForm = ({ addProject }) => {
   const {
     register,
     handleSubmit,
@@ -28,7 +28,10 @@ const CreateTeamForm = () => {
   const titleValue = watch("title", "");
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const invitedMembers = data.members.split(",").map((user) => user.trim());
+    const invitedMembers =
+      data.members !== ""
+        ? data.members.split(",").map((user) => user.trim())
+        : [];
     try {
       const { data: resData } = await authAxios.post(
         backendUrl + "/projects/",
@@ -39,6 +42,7 @@ const CreateTeamForm = () => {
           users: invitedMembers,
         });
       }
+      addProject(resData);
     } catch (error) {
       console.log(error);
     }

@@ -3,10 +3,11 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { IconButton, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeBoard from "../components/boards/HomeBoard";
 import AddBoardModal from "../components/modals/AddBoardModal";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
+import useAxiosGet from "../hooks/useAxiosGet";
 
 const HomeWrapper = styled.div`
   display: flex;
@@ -32,9 +33,12 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const { data: projects } = useAxiosGet("/projects/");
+
   return (
     <HomeWrapper>
-      <HomeSidebar />
+      <HomeSidebar projects={projects || []} />
       <div style={{ flex: 5, marginLeft: "50px" }}>
         <HomeSection>
           <div style={{ display: "flex", alignItems: "center" }}>

@@ -15,12 +15,19 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import CreateProjectModal from "../modals/CreateTeamModal";
+import CreateTeamModal from "../modals/CreateTeamModal";
+import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 
-const HomeSidebar = () => {
+interface HomeSidebarProps {
+  projects: any[];
+}
+
+const HomeSidebar: React.FC<HomeSidebarProps> = ({ projects }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  // console.log(projects);
 
   return (
     <Box
@@ -64,16 +71,20 @@ const HomeSidebar = () => {
             <IconButton edge="end" onClick={handleOpen}>
               <AddIcon />
             </IconButton>
-            <CreateProjectModal setOpen={open} handleClose={handleClose} />
+            <CreateTeamModal setOpen={open} handleClose={handleClose} />
           </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <PeopleAltOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="The Boys" />
-            </ListItemButton>
-          </ListItem>
+          {projects.map((project) => (
+            <Link href={`/p/${project.id}`} key={uuidv4()}>
+              <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <PeopleAltOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={project.title} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          ))}
         </List>
       </nav>
     </Box>

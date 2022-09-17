@@ -3,13 +3,14 @@ import { Button, Typography } from "@mui/material";
 import List from "../components/boards/List";
 import { v4 as uuidv4 } from "uuid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import Header from "../components/headers/Header";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  padding: 100px 50px 40px;
+  padding: 40px 40px 40px;
   display: flex;
   flex-direction: column;
 `;
@@ -42,29 +43,32 @@ const Board = (props) => {
   };
 
   return (
-    <BoardContainer>
-      <Typography variant="h6" fontWeight={500}>
-        {board.title}
-      </Typography>
-      <Typography variant="caption" marginBottom="10px">
-        {board.project}
-      </Typography>
-      <BoardLists>
-        {board.lists.map((l) => (
-          <List list={l} key={uuidv4()} />
-        ))}
-        <Button
-          startIcon={<AddOutlinedIcon />}
-          variant="contained"
-          sx={{
-            height: "fit-content",
-            marginLeft: "20px",
-          }}
-        >
-          Add another list
-        </Button>
-      </BoardLists>
-    </BoardContainer>
+    <>
+      <Header />
+      <BoardContainer>
+        <Typography variant="h6" fontWeight={500}>
+          {board.title}
+        </Typography>
+        <Typography variant="caption" marginBottom="10px">
+          {board.project}
+        </Typography>
+        <BoardLists>
+          {board.lists.map((l) => (
+            <List list={l} key={uuidv4()} />
+          ))}
+          <Button
+            startIcon={<AddOutlinedIcon />}
+            variant="contained"
+            sx={{
+              height: "fit-content",
+              marginLeft: "20px",
+            }}
+          >
+            Add another list
+          </Button>
+        </BoardLists>
+      </BoardContainer>
+    </>
   );
 };
 

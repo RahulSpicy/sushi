@@ -8,7 +8,11 @@ import CardEditModal from "../modals/CardEditModal";
 import Labels from "./Labels";
 import MemberListItem from "./MemberListItem";
 
-const DetailCard = ({ cardData }) => {
+interface DetailCardProps {
+  cardData: any;
+}
+
+const DetailCard = ({ cardData }: DetailCardProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -76,7 +80,7 @@ const DetailCard = ({ cardData }) => {
 };
 
 const iconButtonSides = 40;
-const Members = ({ members }) => (
+const Members = ({ members }: any) => (
   <div
     style={{
       display: "flex",

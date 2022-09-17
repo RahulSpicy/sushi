@@ -87,7 +87,7 @@ const HomeBoard = () => {
   );
 };
 
-const Members = ({ members }) => (
+const Members = ({ members }: any) => (
   <div
     style={{
       display: "flex",

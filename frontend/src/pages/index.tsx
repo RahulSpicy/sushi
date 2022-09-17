@@ -38,7 +38,7 @@ const card = {
 };
 
 const Index = () => {
-  const { checkAuth, checkedAuth, user } = useContext(globalContext);
+  const { checkAuth, checkedAuth, authUser } = useContext(globalContext);
 
   useEffect(() => {
     checkAuth();
@@ -50,7 +50,7 @@ const Index = () => {
 
   return (
     <>
-      {user && (
+      {authUser && (
         <>
           <Header />
           <Home />
@@ -58,7 +58,7 @@ const Index = () => {
           {/* <DetailCard cardData={card} /> */}
         </>
       )}
-      {!user && <Landing />}
+      {!authUser && <Landing />}
     </>
   );
 };

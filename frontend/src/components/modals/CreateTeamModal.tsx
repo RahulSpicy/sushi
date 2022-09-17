@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Modal } from "@mui/material";
+import useAxiosGet from "../../hooks/useAxiosGet";
 import CreateTeamForm from "./CreateTeamForm";
 
 interface CreateTeamModalProps {
@@ -43,6 +44,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   setOpen,
   handleClose,
 }) => {
+  const { addItem: addProject } = useAxiosGet("/projects/");
   return (
     <Modal open={setOpen} onClose={handleClose}>
       <CardContainer>
@@ -60,7 +62,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
           <SubTitle>
             Team up without the chaos! Build the workflow you want.
           </SubTitle>
-          <CreateTeamForm />
+          <CreateTeamForm addProject={addProject} />
         </FormContainer>
       </CardContainer>
     </Modal>

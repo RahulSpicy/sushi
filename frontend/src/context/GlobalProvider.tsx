@@ -17,7 +17,7 @@ interface loginProps {
 const GlobalProvider = (props: GlobalProviderProps) => {
   const router = useRouter();
   const [globalState, dispatch] = useReducer(globalReducer, {
-    user: null,
+    authUser: null,
     checkedAuth: false,
   });
 
@@ -50,7 +50,7 @@ const GlobalProvider = (props: GlobalProviderProps) => {
   return (
     <globalContext.Provider
       value={{
-        user: globalState.user,
+        authUser: globalState.authUser,
         checkedAuth: globalState.checkedAuth,
         checkAuth,
         login,

@@ -27,7 +27,7 @@ const Tag = styled.p`
   }
 `;
 
-const Labels = ({ labels }) => {
+const Labels = ({ labels }: any) => {
   if (labels.length === 0) return null;
   return (
     <div style={{ display: "flex" }}>

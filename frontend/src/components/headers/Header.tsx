@@ -18,6 +18,7 @@ import { useContext, useEffect, useState } from "react";
 import globalContext from "../../context/globalContext";
 import logo from "../../images/logo.png";
 import MemberListItem from "../boards/MemberListItem";
+import Link from "next/link";
 
 const top100Films = [
   { title: "The Shawshank Redemption", year: 1994 },
@@ -30,26 +31,12 @@ const top100Films = [
   { title: "City Lights", year: 1931 },
   { title: "Psycho", year: 1960 },
   { title: "The Green Mile", year: 1999 },
-  { title: "The Intouchables", year: 2011 },
-  { title: "Modern Times", year: 1936 },
-  { title: "Raiders of the Lost Ark", year: 1981 },
-  { title: "Rear Window", year: 1954 },
-  { title: "The Pianist", year: 2002 },
-  { title: "The Departed", year: 2006 },
-  { title: "Terminator 2: Judgment Day", year: 1991 },
-  { title: "Back to the Future", year: 1985 },
-  { title: "Whiplash", year: 2014 },
-  { title: "Gladiator", year: 2000 },
-  { title: "Memento", year: 2000 },
-  { title: "The Prestige", year: 2006 },
-  { title: "The Lion King", year: 1994 },
-  { title: "Apocalypse Now", year: 1979 },
 ];
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const { user } = useContext(globalContext);
+  const { authUser } = useContext(globalContext);
 
   useEffect(() => {
     if (searchQuery !== "") setShowSearch(true);
@@ -101,7 +88,9 @@ const Header = () => {
             paddingLeft: "5px",
           }}
         >
-          <Image src={logo} alt="logo" width={30} height={30} />
+          <Link href="/">
+            <Image src={logo} alt="logo" width={30} height={30} />
+          </Link>
           <Typography
             variant="h6"
             marginLeft={1}
@@ -118,9 +107,9 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          <MemberListItem user={user} header="true" />
+          <MemberListItem user={authUser} header="true" />
           <Typography ml={1} fontSize="15px" color="gray">
-            Hello, {user.full_name.replace(/ .*/, "")}
+            Hello, {authUser.full_name.replace(/ .*/, "")}
           </Typography>
           <IconButton sx={{ marginLeft: "40px", marginRight: "20px" }}>
             <NotificationsOutlinedIcon style={{ color: "gray" }} />
