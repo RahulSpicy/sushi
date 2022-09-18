@@ -10,11 +10,12 @@ const useAxiosGet = (url: string, onSite = true) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  url = onSite ? backendUrl + url : url;
+
   useEffect(() => {
     let unmounted = false;
     const fetchData = async () => {
       const axiosUsed = onSite ? authAxios : axios;
-      url = onSite ? backendUrl + url : url;
 
       try {
         const res = await axiosUsed.get(url);

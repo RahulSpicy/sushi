@@ -199,13 +199,15 @@ const Project = (props) => {
             <Typography variant="h6" fontWeight={400}>
               Team Members ({project.members.length})
             </Typography>
-            <Button
-              variant="outlined"
-              onClick={handleClick}
-              startIcon={<PersonAddAltIcon />}
-            >
-              Invite Team Members
-            </Button>
+            {authUserAccessLevel === 2 && (
+              <Button
+                variant="outlined"
+                onClick={handleClick}
+                startIcon={<PersonAddAltIcon />}
+              >
+                Invite Team Members
+              </Button>
+            )}
             <InviteMembersModal
               handleClosePopover={handleClosePopover}
               anchorEl={anchorEl}

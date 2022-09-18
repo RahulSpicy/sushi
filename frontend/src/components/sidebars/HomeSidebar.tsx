@@ -23,7 +23,7 @@ interface HomeSidebarProps {
   projects: any[];
 }
 
-const HomeSidebar: React.FC<HomeSidebarProps> = ({ projects }) => {
+const HomeSidebar = ({ projects }: HomeSidebarProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

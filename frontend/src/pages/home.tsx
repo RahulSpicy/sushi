@@ -3,7 +3,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HomeBoard from "../components/boards/HomeBoard";
 import AddBoardModal from "../components/modals/AddBoardModal";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
@@ -34,7 +34,7 @@ const Home = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const { data: projects } = useAxiosGet("/projects/");
+  const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
 
   return (
     <HomeWrapper>
