@@ -19,16 +19,15 @@ class ProjectList(
 ):
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return ProjectSerializer
+            return ProjectSerializer  # ShortProjectSerializer
 
         return ProjectSerializer
 
     def get_queryset(self):
         # Sort by access_level so projects where you're admin at top
-
         project_ids = (
             ProjectMembership.objects.filter(member=self.request.user)
-            .order_by("access_level")
+            .order_by("-access_level")
             .values_list("project__id", flat=True)
         )
 
@@ -115,6 +114,7 @@ class ProjectMemberDetail(APIView):
 
 
 site_url = "http://localhost:8000/"
+REDIS_URL = "redis://default:redispw@localhost:6380"
 r = redis.Redis(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,

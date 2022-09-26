@@ -1,23 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import { v4 as uuidv4 } from "uuid";
-import { Box, Button, Typography, TextareaAutosize } from "@mui/material";
-import { useState, useContext, useEffect } from "react";
-import useAxiosGet from "../../hooks/useAxiosGet";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import globalContext from "../../context/globalContext";
-import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import Header from "../../components/headers/Header";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import CloseIcon from "@mui/icons-material/Close";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { Box, Button, TextareaAutosize, Typography } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
+import MemberListItem from "../../components/boards/MemberListItem";
+import Header from "../../components/headers/Header";
+import ChangePermissionsModal from "../../components/modals/ChangePermissionsModal";
+import InviteMembersModal from "../../components/modals/InviteMembersModal";
+import globalContext from "../../context/globalContext";
+import useAxiosGet from "../../hooks/useAxiosGet";
 import { authAxios } from "../../utils/authAxios";
 import { backendUrl } from "../../utils/const";
-import CloseIcon from "@mui/icons-material/Close";
-import MemberListItem from "../../components/boards/MemberListItem";
-import { SubmitHandler, useForm } from "react-hook-form";
-import InviteMembersModal from "../../components/modals/InviteMembersModal";
-import ChangePermissionsModal from "../../components/modals/ChangePermissionsModal";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -76,9 +76,17 @@ const MemberButtonsContainer = styled.div`
 const defaultImageUrl =
   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80";
 
-const Project = (props) => {
-  // const { id } = props.match.params;
-  const { id } = props;
+const Project = ({}) => {
+  const router = useRouter();
+  const id = router.query.id;
+  console.log(id);
+
+  const { data: project, setData: setProject } = useAxiosGet(
+    `/projects/${id}/`
+  );
+
+  console.log(project);
+
   const { authUser } = useContext(globalContext);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -93,33 +101,6 @@ const Project = (props) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const { data: project, setData: setProject } = useAxiosGet(
-    `/projects/${id}/`
-  );
-
-  // const project = {
-  //   id: "1",
-  //   title: "Project 1",
-  //   description: "This is a project",
-  //   image: "",
-  //   members: [
-  //     {
-  //       id: "1",
-  //       username: "rushi611",
-  //       first_name: "Rushi",
-  //       email: "",
-  //       access_level: "2",
-  //     },
-  //     {
-  //       id: "2",
-  //       username: "testuser1",
-  //       first_name: "Sanshriti",
-  //       email: "",
-  //       access_level: "1",
-  //     },
-  //   ],
-  // };
-
   const authUserAccessLevel = project
     ? project.members.find((member) => member.username === authUser.username)
         .access_level
@@ -129,7 +110,7 @@ const Project = (props) => {
     setValue(newValue);
   };
 
-  // if (!project) return null;
+  if (!project) return null;
 
   return (
     <div>
@@ -144,7 +125,7 @@ const Project = (props) => {
                 width: "80px",
                 height: "80px",
               }}
-              // src={project.image || defaultImageUrl}
+              //src={project.image || defaultImageUrl}
               src={defaultImageUrl}
               alt="Team Profile Picture"
             />
@@ -158,7 +139,7 @@ const Project = (props) => {
                 }}
               >
                 <Typography variant="h6" fontWeight={400}>
-                  {project?.title}
+                  {project.title}
                 </Typography>
                 {authUserAccessLevel === 2 && (
                   <Button
@@ -184,9 +165,9 @@ const Project = (props) => {
             )}
           </HeaderTop>
           <Tabs value={value} onChange={handleChange} centered>
-            <Tab label="Boards" />
-            <Tab label="Members" />
-            <Tab label="Settings" />
+            <Tab label="Boards" {...a11yProps(0)} />
+            <Tab label="Members" {...a11yProps(1)} />
+            <Tab label="Settings" {...a11yProps(2)} />
           </Tabs>
         </HeaderContent>
       </HeaderContainer>
@@ -252,6 +233,13 @@ function TabPanel(props: TabPanelProps) {
       )}
     </div>
   );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
 }
 
 const EditForm = ({ project, setProject, setIsEditing }: EditFormProps) => {

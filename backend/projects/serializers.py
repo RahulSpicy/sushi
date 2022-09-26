@@ -4,22 +4,6 @@ from users.serializers import UserSerializer
 from rest_framework import serializers
 
 
-class ProjectSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    members = serializers.SerializerMethodField()
-
-    def get_members(self, obj):
-        queryset = ProjectMembership.objects.filter(project=obj)
-        return ProjectMembershipSerializer(
-            queryset, many=True, context={"request": self.context["request"]}
-        ).data
-
-    class Meta:
-        model = Project
-        fields = ["id", "owner", "title", "description", "members"]
-        read_only_fields = ["owner"]
-
-
 class ProjectMembershipSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source="member.full_name", read_only=True)
     username = serializers.CharField(source="member.username", read_only=True)
@@ -36,3 +20,19 @@ class ProjectMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectMembership
         fields = ["id", "full_name", "username", "email", "profile_pic", "access_level"]
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    members = serializers.SerializerMethodField()
+
+    def get_members(self, obj):
+        queryset = ProjectMembership.objects.filter(project=obj)
+        return ProjectMembershipSerializer(
+            queryset, many=True, context={"request": self.context["request"]}
+        ).data
+
+    class Meta:
+        model = Project
+        fields = ["id", "owner", "title", "description", "members"]
+        read_only_fields = ["owner"]

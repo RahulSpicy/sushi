@@ -35,7 +35,7 @@ const useAxiosGet = (url: string, onSite = true) => {
     return () => {
       unmounted = true;
     };
-  }, [url]);
+  }, [onSite, url]);
 
   // Below two functions are only if data is an array
   const addItem = (item) => {
