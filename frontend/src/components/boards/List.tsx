@@ -1,12 +1,13 @@
-import { v4 as uuidv4 } from "uuid";
-import DetailCard from "./DetailCard";
 import styled from "@emotion/styled";
-import { IconButton, Typography } from "@mui/material";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import { IconButton, Typography } from "@mui/material";
+import { Droppable } from "react-beautiful-dnd";
+import { v4 as uuidv4 } from "uuid";
+import DraggableCard from "./DraggableCard";
 
 const ListContainer = styled.div`
   background-color: white;
-  padding: 0.7em 0.5em 0.7em 0.5em;
+  padding: 0.7em 0.2em 0.7em 0.2em;
   width: fit-content;
   max-height: 97%;
   border: 0;
@@ -14,6 +15,7 @@ const ListContainer = styled.div`
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  margin-right: 1em;
 `;
 
 const ListTitle = styled.div`
@@ -48,21 +50,7 @@ const ListAddCard = styled.div`
   color: gray;
 `;
 
-const list = {
-  title: "List1",
-  cards: [
-    {
-      title: "Card1",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      labels: ["Urgent"],
-      assigned_to: [],
-      attachments: ["abc.jpg"],
-      comments: [],
-    },
-  ],
-};
-
-const List = () => {
+const List = ({ list }: any) => {
   return (
     <ListContainer>
       <ListTitle>
@@ -71,11 +59,23 @@ const List = () => {
           <MoreHorizOutlinedIcon />
         </IconButton>
       </ListTitle>
-      <ListCards>
-        {list.cards.map((card) => (
-          <DetailCard cardData={card} key={uuidv4()} />
-        ))}
-      </ListCards>
+
+      <Droppable droppableId={list.id.toString()}>
+        {(provided) => (
+          <ListCards ref={provided.innerRef} {...provided.droppableProps}>
+            {list.items.map((card, index) => (
+              <DraggableCard
+                card={card}
+                list={list}
+                key={uuidv4()}
+                index={index}
+              />
+            ))}
+            {provided.placeholder}
+          </ListCards>
+        )}
+      </Droppable>
+
       <ListAddCard>Add Card</ListAddCard>
     </ListContainer>
   );

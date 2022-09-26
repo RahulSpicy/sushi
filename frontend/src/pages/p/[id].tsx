@@ -250,7 +250,7 @@ const EditForm = ({ project, setProject, setIsEditing }: EditFormProps) => {
   useEffect(() => {
     setValue("title", project.title);
     setValue("description", project.description);
-  }, [project]);
+  }, [project, setValue]);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {

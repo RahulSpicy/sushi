@@ -51,7 +51,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
         <CloseContainer>
           <IconButton
             sx={{ height: "30px", width: "30px", marginLeft: "auto" }}
-            // onClick={handleClose}
+            onClick={handleClose}
           >
             <CloseIcon sx={{ fontSize: "20px" }} />
           </IconButton>
@@ -62,7 +62,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
           <SubTitle>
             Team up without the chaos! Build the workflow you want.
           </SubTitle>
-          <CreateTeamForm addProject={addProject} />
+          <CreateTeamForm addProject={addProject} handleClose={handleClose} />
         </FormContainer>
       </CardContainer>
     </Modal>

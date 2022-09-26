@@ -9,16 +9,30 @@ import Labels from "./Labels";
 import MemberListItem from "./MemberListItem";
 
 interface DetailCardProps {
-  cardData: any;
+  card: any;
+  list: any;
+  provided: any;
+  isDragging: boolean;
 }
 
-const DetailCard = ({ cardData }: DetailCardProps) => {
+const getCardStyle = (isDragging, defaultStyle) => {
+  if (!isDragging) return defaultStyle;
+  return {
+    ...defaultStyle,
+    transform: defaultStyle.transform + " rotate(5deg)",
+  };
+};
+
+const DetailCard = ({ card, list, provided, isDragging }: DetailCardProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // style={getCardStyle(isDragging, draggableProps.style)}
+
+  // const { innerRef, draggableProps, dragHandleProps } = provided;
   return (
-    <div>
+    <>
       <Card
         variant="outlined"
         sx={{
@@ -35,6 +49,9 @@ const DetailCard = ({ cardData }: DetailCardProps) => {
             background: "whitesmoke",
           },
         }}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
       >
         <CardContent>
           <IconButton
@@ -48,11 +65,11 @@ const DetailCard = ({ cardData }: DetailCardProps) => {
             <EditOutlinedIcon sx={{ width: "20px", height: "20px" }} />
           </IconButton>
 
-          <Labels labels={cardData.labels} />
+          <Labels labels={card.labels} />
           <Typography variant="h6" fontWeight={400}>
-            {cardData.title}
+            {card.title}
           </Typography>
-          {cardData.attachments?.length !== 0 && (
+          {card.attachments?.length !== 0 && (
             <div style={{ display: "flex", padding: "1px", marginTop: "2px" }}>
               <AttachmentOutlinedIcon
                 sx={{
@@ -63,19 +80,20 @@ const DetailCard = ({ cardData }: DetailCardProps) => {
                 }}
               />
               <Typography variant="caption" fontWeight={500} color="gray">
-                x {cardData.attachments.length}
+                x {card.attachments.length}
               </Typography>
             </div>
           )}
-          <Members members={cardData.assigned_to} />
+          <Members members={card.assigned_to} />
         </CardContent>
       </Card>
       <CardEditModal
         setOpen={open}
         handleClose={handleClose}
-        cardData={cardData}
+        card={card}
+        list={list}
       />
-    </div>
+    </>
   );
 };
 

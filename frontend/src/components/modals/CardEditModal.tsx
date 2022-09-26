@@ -20,7 +20,8 @@ import Labels from "../boards/Labels";
 interface CardEditModalProps {
   setOpen: boolean;
   handleClose: (open: boolean) => void;
-  cardData: any;
+  card: any;
+  list: any;
 }
 
 const CardContainer = styled(Box)`
@@ -52,7 +53,8 @@ const CloseContainer = styled.div`
 const CardEditModal: React.FC<CardEditModalProps> = ({
   setOpen,
   handleClose,
-  cardData,
+  card,
+  list,
 }) => {
   return (
     <Modal open={setOpen} onClose={handleClose}>
@@ -68,10 +70,10 @@ const CardEditModal: React.FC<CardEditModalProps> = ({
         <Grid container spacing={1}>
           <Grid item xs={9}>
             <CardContentSide>
-              <Labels labels={cardData.labels} />
-              <EditableField text={cardData.title} />
+              <Labels labels={card.labels} />
+              <EditableField text={card.title} />
               <p style={{ fontSize: "12px" }}>
-                in list <b style={{ fontWeight: "600" }}>{cardData.list}</b>
+                in list <b style={{ fontWeight: "600" }}>{list.title}</b>
               </p>
               <LogoTextContainer>
                 <DescriptionOutlinedIcon style={{ color: "gray" }} />
@@ -86,7 +88,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({
                   Description
                 </Typography>
               </LogoTextContainer>
-              <EditableTextField desc={cardData.description} />
+              <EditableTextField desc={card.description} />
 
               <LogoTextContainer>
                 <AttachmentOutlinedIcon style={{ color: "gray" }} />

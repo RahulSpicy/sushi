@@ -17,7 +17,12 @@ const Label = styled.label`
   margin-bottom: 0.3em;
 `;
 
-const CreateTeamForm = ({ addProject }) => {
+interface CreateTeamFormProps {
+  addProject: any;
+  handleClose: (open: boolean) => void;
+}
+
+const CreateTeamForm = ({ addProject, handleClose }: CreateTeamFormProps) => {
   const {
     register,
     handleSubmit,
@@ -46,6 +51,7 @@ const CreateTeamForm = ({ addProject }) => {
     } catch (error) {
       console.log(error);
     }
+    handleClose(false);
   };
 
   return (
