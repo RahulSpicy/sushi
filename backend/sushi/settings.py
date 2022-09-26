@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "users",
     "projects",
-    "boards",
+    "boards.apps.BoardsConfig",
     "drf_yasg",
     "corsheaders",
 ]
