@@ -18,6 +18,7 @@ import globalContext from "../../context/globalContext";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { authAxios } from "../../utils/authAxios";
 import { backendUrl } from "../../utils/const";
+import FourOhFour from "../404";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -81,9 +82,11 @@ const Project = ({}) => {
   const id = router.query.id;
   console.log(id);
 
-  const { data: project, setData: setProject } = useAxiosGet(
-    `/projects/${id}/`
-  );
+  const {
+    data: project,
+    loading,
+    setData: setProject,
+  } = useAxiosGet(`/projects/${id}/`);
 
   console.log(project);
 
@@ -101,16 +104,19 @@ const Project = ({}) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const authUserAccessLevel = project
-    ? project.members.find((member) => member.username === authUser.username)
-        .access_level
-    : 1;
+  if (!project && loading) return null;
+  if (!project && !loading) return <FourOhFour />; // No project with given id
+
+  // Project exists
+  const authUserMembership = project.members.find(
+    (member) => member.username === authUser.username
+  );
+  if (!authUserMembership) return <FourOhFour />; // Not a member
+  const authUserAccessLevel = authUserMembership.access_level;
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  if (!project) return null;
 
   return (
     <div>
@@ -125,8 +131,7 @@ const Project = ({}) => {
                 width: "80px",
                 height: "80px",
               }}
-              //src={project.image || defaultImageUrl}
-              src={defaultImageUrl}
+              src={project.image || defaultImageUrl}
               alt="Team Profile Picture"
             />
 
@@ -293,9 +298,15 @@ const EditForm = ({ project, setProject, setIsEditing }: EditFormProps) => {
         }}
       />
       <div>
-        <Button sx={{ marginRight: "0.5em" }} variant="outlined">
-          Save
-        </Button>
+        {titleValue.trim() !== "" ? (
+          <Button sx={{ marginRight: "0.5em" }} variant="outlined">
+            Save
+          </Button>
+        ) : (
+          <Button sx={{ marginRight: "0.5em" }} variant="outlined" disabled>
+            Save
+          </Button>
+        )}
         <Button
           sx={{ marginRight: "0.5em" }}
           variant="outlined"

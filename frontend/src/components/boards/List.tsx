@@ -39,6 +39,27 @@ const ListCards = styled.div`
       margin-bottom: 0;
     }
   }
+
+  /* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #E5E5E5; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #F1F1F1; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #DADADA; 
+}
+
 `;
 
 const ListAddCard = styled.div`
