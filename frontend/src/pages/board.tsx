@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
-import { Button, Typography, Input } from "@mui/material";
-import List from "../components/boards/List";
-import { v4 as uuidv4 } from "uuid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import Header from "../components/headers/Header";
-import { useState } from "react";
+import { Button, Input, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { DragDropContext } from "react-beautiful-dnd";
+import { useState } from "react";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { v4 as uuidv4 } from "uuid";
+import List from "../components/boards/List";
+import Header from "../components/headers/Header";
+import { onDragEnd } from "../utils/board";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;
@@ -43,6 +44,7 @@ const Board = ({}) => {
 
   const [addingList, setAddingList] = useState(false);
   const [board, setBoard] = useState({
+    id: 1,
     title: "Hello World",
     project: "The Boys",
     lists: [
@@ -90,7 +92,7 @@ const Board = ({}) => {
       },
       {
         id: 2,
-        title: "List1",
+        title: "List2",
         items: [
           {
             id: 5,
@@ -133,62 +135,6 @@ const Board = ({}) => {
     ],
   }); // Get using route params
 
-  const onDragEnd = (result) => {
-    // Must update state synchromously so hit endpoint after setState
-    // A bit optimistic but a must
-    const { source, destination, draggableId } = result;
-
-    if (!destination) return; // Dropped outside of list
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    )
-      return; // Position didn't change
-
-    const sourceList = board.lists.find(
-      (list) => list.id.toString() === source.droppableId
-    );
-    const item = sourceList.items.find(
-      (item) => item.id.toString() === draggableId
-    );
-    const destinationList = board.lists.find(
-      (list) => list.id.toString() === destination.droppableId
-    );
-
-    const newItems = [...sourceList.items];
-    let newItems2;
-    if (source.droppableId === destination.droppableId) {
-      newItems2 = newItems;
-    } else {
-      newItems2 = [...destinationList.items];
-    }
-    newItems.splice(source.index, 1);
-    newItems2.splice(destination.index, 0, item);
-
-    const newList = {
-      ...sourceList,
-      items: newItems,
-    };
-
-    const newList2 = {
-      ...destinationList,
-      items: newItems2,
-    };
-
-    const newLists = board.lists.map((list) => {
-      if (list.id === newList.id) return newList;
-      else if (list.id === newList2.id) return newList2;
-      return list;
-    });
-
-    const newBoard = {
-      ...board,
-      lists: newLists,
-    };
-
-    setBoard(newBoard);
-  };
-
   return (
     <>
       <Header />
@@ -199,34 +145,53 @@ const Board = ({}) => {
         <Typography variant="caption" marginBottom="10px">
           {board.project}
         </Typography>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <BoardLists>
-            {board.lists.map((list) => (
-              <List list={list} key={uuidv4()} />
-            ))}
-            {addingList ? (
-              <CreateList />
-            ) : (
-              <Button
-                startIcon={<AddOutlinedIcon />}
-                variant="contained"
-                sx={{
-                  height: "fit-content",
-                }}
-                onClick={() => setAddingList(true)}
-              >
-                Add another list
-              </Button>
+        <DragDropContext onDragEnd={onDragEnd(board, setBoard)}>
+          <Droppable
+            droppableId={"board" + board.id.toString()}
+            direction="horizontal"
+            type="list"
+          >
+            {(provided) => (
+              <BoardLists ref={provided.innerRef} {...provided.droppableProps}>
+                {board.lists.map((list, index) => (
+                  <List list={list} index={index} key={uuidv4()} />
+                ))}
+                {provided.placeholder}
+                {addingList ? (
+                  <CreateList
+                    board={board}
+                    setBoard={setBoard}
+                    setAddingList={setAddingList}
+                  />
+                ) : (
+                  <Button
+                    startIcon={<AddOutlinedIcon />}
+                    variant="contained"
+                    sx={{
+                      height: "fit-content",
+                    }}
+                    onClick={() => setAddingList(true)}
+                  >
+                    Add another list
+                  </Button>
+                )}
+              </BoardLists>
             )}
-          </BoardLists>
+          </Droppable>
         </DragDropContext>
       </BoardContainer>
     </>
   );
 };
 
-const CreateList = () => {
+const CreateList = ({ board, setBoard, setAddingList }) => {
   const [title, setTitle] = useState("");
+
+  const onAddList = (e) => {
+    e.preventDefault();
+    // TO DO
+    setAddingList(false);
+  };
   return (
     <form
       style={{
@@ -240,6 +205,7 @@ const CreateList = () => {
         borderRadius: "5px",
         boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1)",
       }}
+      onSubmit={onAddList}
     >
       <Input
         fullWidth
@@ -250,9 +216,15 @@ const CreateList = () => {
         placeholder="Enter list title"
         sx={{ marginBottom: "1em" }}
       />
-      <Button variant="outlined" fullWidth>
-        Add List
-      </Button>
+      {title.trim() !== "" ? (
+        <Button variant="outlined" fullWidth>
+          Add List
+        </Button>
+      ) : (
+        <Button variant="outlined" fullWidth disabled>
+          Add List
+        </Button>
+      )}
     </form>
   );
 };
