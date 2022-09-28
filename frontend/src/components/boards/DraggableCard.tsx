@@ -10,14 +10,23 @@ interface DraggableCardProps {
 const DraggableCard = ({ card, list, index }: DraggableCardProps) => {
   return (
     <Draggable draggableId={card.id.toString()} index={index}>
-      {(provided, snapshot) => (
-        <DetailCard
-          card={card}
-          list={list}
-          provided={provided}
-          isDragging={snapshot.isDragging}
-        />
-      )}
+      {(provided, snapshot) => {
+        if (typeof provided.draggableProps.onTransitionEnd === "function") {
+          const anim = window?.requestAnimationFrame(() =>
+            provided.draggableProps.onTransitionEnd({
+              propertyName: "transform",
+            })
+          );
+        }
+        return (
+          <DetailCard
+            card={card}
+            list={list}
+            provided={provided}
+            isDragging={snapshot.isDragging}
+          />
+        );
+      }}
     </Draggable>
   );
 };

@@ -74,33 +74,42 @@ const ListAddCard = styled.div`
 const List = ({ list, index }: any) => {
   return (
     <Draggable draggableId={"list" + list.id.toString()} index={index}>
-      {(provided, snapshot) => (
-        <ListContainer ref={provided.innerRef} {...provided.draggableProps}>
-          <ListTitle {...provided.dragHandleProps}>
-            <Typography ml={2}>{list.title}</Typography>
-            <IconButton>
-              <MoreHorizOutlinedIcon />
-            </IconButton>
-          </ListTitle>
+      {(provided, snapshot) => {
+        if (typeof provided.draggableProps.onTransitionEnd === "function") {
+          const anim = window?.requestAnimationFrame(() =>
+            provided.draggableProps.onTransitionEnd({
+              propertyName: "transform",
+            })
+          );
+        }
+        return (
+          <ListContainer ref={provided.innerRef} {...provided.draggableProps}>
+            <ListTitle {...provided.dragHandleProps}>
+              <Typography ml={2}>{list.title}</Typography>
+              <IconButton>
+                <MoreHorizOutlinedIcon />
+              </IconButton>
+            </ListTitle>
 
-          <Droppable droppableId={list.id.toString()}>
-            {(provided) => (
-              <ListCards ref={provided.innerRef} {...provided.droppableProps}>
-                {list.items.map((card, index) => (
-                  <DraggableCard
-                    card={card}
-                    list={list}
-                    key={uuidv4()}
-                    index={index}
-                  />
-                ))}
-                {provided.placeholder}
-              </ListCards>
-            )}
-          </Droppable>
-          <ListAddCard>Add Card</ListAddCard>
-        </ListContainer>
-      )}
+            <Droppable droppableId={list.id.toString()} type="item">
+              {(provided) => (
+                <ListCards ref={provided.innerRef} {...provided.droppableProps}>
+                  {list.items.map((card, index) => (
+                    <DraggableCard
+                      card={card}
+                      list={list}
+                      key={uuidv4()}
+                      index={index}
+                    />
+                  ))}
+                  {provided.placeholder}
+                </ListCards>
+              )}
+            </Droppable>
+            <ListAddCard>Add Card</ListAddCard>
+          </ListContainer>
+        );
+      }}
     </Draggable>
   );
 };
