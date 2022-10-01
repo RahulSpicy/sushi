@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import List from "../components/boards/List";
 import Header from "../components/headers/Header";
 import { onDragEnd } from "../utils/board";
+import Head from "next/head";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;
@@ -137,6 +138,9 @@ const Board = ({}) => {
 
   return (
     <>
+      <Head>
+        <title>{board ? `${board.title} | Sushi` : ""}</title>
+      </Head>
       <Header />
       <BoardContainer>
         <Typography variant="h6" fontWeight={500}>

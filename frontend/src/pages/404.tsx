@@ -5,6 +5,7 @@ import globalContext from "../context/globalContext";
 import error404 from "../images/error404.svg";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
+import Head from "next/head";
 
 const ErrorContent = styled.div`
   position: absolute;
@@ -17,7 +18,10 @@ const ErrorContent = styled.div`
 export default function FourOhFour() {
   const { authUser } = useContext(globalContext);
   return (
-    <div>
+    <>
+      <Head>
+        <title>Error | Sushi</title>
+      </Head>
       <ErrorContent>
         <Image src={error404} width="400px" height="400px" alt="" />
         <Typography variant="h5">You look a little lost there</Typography>
@@ -32,6 +36,6 @@ export default function FourOhFour() {
           )}
         </Typography>
       </ErrorContent>
-    </div>
+    </>
   );
 }

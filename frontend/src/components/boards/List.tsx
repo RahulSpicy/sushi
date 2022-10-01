@@ -18,8 +18,6 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 1em;
-  justify-content: center;
-  align-items: center;
 `;
 
 const ListTitle = styled.div`
@@ -73,6 +71,7 @@ const ListAddCard = styled(Button)`
   width: 275px;
   padding: 0.75em 0;
   color: gray;
+  align-self: center;
 `;
 
 const List = ({ list, index }: any) => {

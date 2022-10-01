@@ -6,6 +6,7 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { Box, Button, TextareaAutosize, Typography } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -120,6 +121,9 @@ const Project = ({}) => {
 
   return (
     <div>
+      <Head>
+        <title>{project ? `${project.title} | Sushi` : ""}</title>
+      </Head>
       <Header />
       <HeaderContainer>
         <HeaderContent>

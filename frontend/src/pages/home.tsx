@@ -3,6 +3,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { IconButton, Typography } from "@mui/material";
+import Head from "next/head";
 import { useState } from "react";
 import HomeBoard from "../components/boards/HomeBoard";
 import AddBoardModal from "../components/modals/AddBoardModal";
@@ -38,6 +39,9 @@ const Home = () => {
 
   return (
     <HomeWrapper>
+      <Head>
+        <title>Boards | Sushi</title>
+      </Head>
       <HomeSidebar projects={projects || []} />
       <div style={{ flex: 5, marginLeft: "50px" }}>
         <HomeSection>
