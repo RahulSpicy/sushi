@@ -30,6 +30,7 @@ authAxios.interceptors.response.use(
         const { data: resData } = await axios.post(url, {
           refresh: refreshToken,
         });
+        // Successfully refreshed
         localStorage.setItem("accessToken", resData.access);
         const accessToken = localStorage.getItem("accessToken");
         authAxios.defaults.headers.common["Authorization"] =

@@ -1,8 +1,10 @@
 import styled from "@emotion/styled";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
-import { IconButton, Typography } from "@mui/material";
+import { Button, IconButton, Input, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
+import { mergeRefs } from "../../utils/mergeRefs";
 import DraggableCard from "./DraggableCard";
 
 const ListContainer = styled.div`
@@ -16,6 +18,8 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-right: 1em;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ListTitle = styled.div`
@@ -62,7 +66,7 @@ const ListCards = styled.div`
 
 `;
 
-const ListAddCard = styled.div`
+const ListAddCard = styled(Button)`
   margin-top: auto;
   text-align: center;
   font-size: 0.875rem;
@@ -72,6 +76,26 @@ const ListAddCard = styled.div`
 `;
 
 const List = ({ list, index }: any) => {
+  const [addingCard, setAddingCard] = useState(false);
+  const [title, setTitle] = useState("");
+  const listCards = useRef(null);
+
+  const startAddingCard = () => {
+    setAddingCard(true);
+    listCards.current.scrollTop = listCards.current.scrollHeight;
+  };
+
+  const onAddCard = (e) => {
+    e.preventDefault();
+    if (title.trim() === "") return;
+    setAddingCard(false);
+  };
+
+  useEffect(() => {
+    if (addingCard)
+      listCards.current.scrollTop = listCards.current.scrollHeight;
+  }, [addingCard]);
+
   return (
     <Draggable draggableId={"list" + list.id.toString()} index={index}>
       {(provided, snapshot) => {
@@ -93,7 +117,10 @@ const List = ({ list, index }: any) => {
 
             <Droppable droppableId={list.id.toString()} type="item">
               {(provided) => (
-                <ListCards ref={provided.innerRef} {...provided.droppableProps}>
+                <ListCards
+                  ref={mergeRefs(provided.innerRef, listCards)}
+                  {...provided.droppableProps}
+                >
                   {list.items.map((card, index) => (
                     <DraggableCard
                       card={card}
@@ -103,10 +130,38 @@ const List = ({ list, index }: any) => {
                     />
                   ))}
                   {provided.placeholder}
+                  {addingCard && (
+                    <form
+                      onSubmit={onAddCard}
+                      style={{
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Input
+                        type="text"
+                        name="title"
+                        placeholder="Enter card title..."
+                        onChange={(e) => setTitle(e.target.value)}
+                        sx={{
+                          width: "90%",
+                        }}
+                      />
+                    </form>
+                  )}
                 </ListCards>
               )}
             </Droppable>
-            <ListAddCard>Add Card</ListAddCard>
+
+            {!addingCard ? (
+              <ListAddCard onClick={startAddingCard}>Add Card</ListAddCard>
+            ) : title.trim() !== "" ? (
+              <ListAddCard onClick={onAddCard}>Add</ListAddCard>
+            ) : (
+              <ListAddCard disabled>Add</ListAddCard>
+            )}
           </ListContainer>
         );
       }}

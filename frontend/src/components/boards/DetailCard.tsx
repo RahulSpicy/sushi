@@ -15,20 +15,10 @@ interface DetailCardProps {
   isDragging: boolean;
 }
 
-const getCardStyle = (isDragging, defaultStyle) => {
-  if (!isDragging) return defaultStyle;
-  return {
-    ...defaultStyle,
-    transform: defaultStyle.transform + " rotate(5deg)",
-  };
-};
-
-const DetailCard = ({ card, list, provided, isDragging }: DetailCardProps) => {
+const DetailCard = ({ card, list, provided }: DetailCardProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  // style={getCardStyle(isDragging, draggableProps.style)}
 
   // const { innerRef, draggableProps, dragHandleProps } = provided;
   return (
