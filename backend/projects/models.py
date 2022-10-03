@@ -11,15 +11,14 @@ class Project(models.Model):
     )
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
+    profile_picture = models.ImageField(blank=True, upload_to="project_profile_pics")
     created_at = models.DateTimeField(default=timezone.now)
     members = models.ManyToManyField(
         User, through="ProjectMembership", through_fields=("project", "member")
     )
+
     boards = GenericRelation(
-        Board,
-        related_query_name="owner",
-        object_id_field="owner_id",
-        content_type_field="owner_model",
+        Board, object_id_field="owner_id", content_type_field="owner_model"
     )
 
     def __str__(self):

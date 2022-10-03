@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "users",
-    "projects",
+    "projects.apps.ProjectsConfig",
     "boards.apps.BoardsConfig",
     "drf_yasg",
     "corsheaders",
