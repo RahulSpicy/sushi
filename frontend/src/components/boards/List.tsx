@@ -4,6 +4,9 @@ import { Button, IconButton, Input, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
+import { authAxios } from "../../utils/authAxios";
+import { updateList } from "../../utils/board";
+import { backendUrl } from "../../utils/const";
 import { mergeRefs } from "../../utils/mergeRefs";
 import DraggableCard from "./DraggableCard";
 
@@ -74,19 +77,15 @@ const ListAddCard = styled(Button)`
   align-self: center;
 `;
 
-const List = ({ list, index }: any) => {
+const List = ({ list, index, board, setBoard }: any) => {
   const [addingCard, setAddingCard] = useState(false);
-  const [title, setTitle] = useState("");
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [cardTitle, setCardTitle] = useState("");
   const listCards = useRef(null);
-
-  const startAddingCard = () => {
-    setAddingCard(true);
-    listCards.current.scrollTop = listCards.current.scrollHeight;
-  };
 
   const onAddCard = (e) => {
     e.preventDefault();
-    if (title.trim() === "") return;
+    if (cardTitle.trim() === "") return;
     setAddingCard(false);
   };
 
@@ -108,7 +107,19 @@ const List = ({ list, index }: any) => {
         return (
           <ListContainer ref={provided.innerRef} {...provided.draggableProps}>
             <ListTitle {...provided.dragHandleProps}>
-              <Typography ml={2}>{list.title}</Typography>
+              {/* <Typography ml={2}>{list.title}</Typography> */}
+              {!editingTitle ? (
+                <Typography ml={2} onClick={() => setEditingTitle(true)}>
+                  {list.title}
+                </Typography>
+              ) : (
+                <EditList
+                  list={list}
+                  setEditingTitle={setEditingTitle}
+                  board={board}
+                  setBoard={setBoard}
+                />
+              )}
               <IconButton>
                 <MoreHorizOutlinedIcon />
               </IconButton>
@@ -130,33 +141,21 @@ const List = ({ list, index }: any) => {
                   ))}
                   {provided.placeholder}
                   {addingCard && (
-                    <form
-                      onSubmit={onAddCard}
-                      style={{
-                        padding: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Input
-                        type="text"
-                        name="title"
-                        placeholder="Enter card title..."
-                        onChange={(e) => setTitle(e.target.value)}
-                        sx={{
-                          width: "90%",
-                        }}
-                      />
-                    </form>
+                    <AddCard
+                      onAddCard={onAddCard}
+                      cardTitle={cardTitle}
+                      setCardTitle={setCardTitle}
+                    />
                   )}
                 </ListCards>
               )}
             </Droppable>
 
             {!addingCard ? (
-              <ListAddCard onClick={startAddingCard}>Add Card</ListAddCard>
-            ) : title.trim() !== "" ? (
+              <ListAddCard onClick={() => setAddingCard(true)}>
+                Add Card
+              </ListAddCard>
+            ) : cardTitle.trim() !== "" ? (
               <ListAddCard onClick={onAddCard}>Add</ListAddCard>
             ) : (
               <ListAddCard disabled>Add</ListAddCard>
@@ -169,3 +168,56 @@ const List = ({ list, index }: any) => {
 };
 
 export default List;
+
+const AddCard = ({ onAddCard, cardTitle, setCardTitle }: any) => (
+  <form
+    onSubmit={onAddCard}
+    style={{
+      padding: "10px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <Input
+      type="text"
+      name="title"
+      placeholder="Enter card title..."
+      value={cardTitle}
+      onChange={(e) => setCardTitle(e.target.value)}
+      sx={{
+        width: "90%",
+      }}
+    />
+  </form>
+);
+
+const EditList = ({ list, setEditingTitle, board, setBoard }: any) => {
+  const [listTitle, setListTitle] = useState(list.title);
+
+  const onEditList = async (e) => {
+    e.preventDefault();
+    if (listTitle.trim() === "") return;
+    const { data } = await authAxios.put(
+      `${backendUrl}/boards/lists/${list.id}/`,
+      {
+        title: listTitle,
+      }
+    );
+    console.log(data);
+    updateList(board, setBoard)(data);
+    setEditingTitle(false);
+  };
+  return (
+    <form onSubmit={onEditList}>
+      <Input
+        type="text"
+        name="title"
+        value={listTitle}
+        style={{ marginLeft: "20px" }}
+        fullWidth
+        onChange={(e) => setListTitle(e.target.value)}
+      />
+    </form>
+  );
+};

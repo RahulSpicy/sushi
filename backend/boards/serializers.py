@@ -28,16 +28,18 @@ class BoardSerializer(serializers.ModelSerializer):
         return serializer_class(obj.owner).data
 
 
-class ListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = List
-        exclude = ["board"]
-
-
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = "__all__"
+
+
+class ListSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = List
+        exclude = ["board"]
 
 
 class CommentSerializer(serializers.ModelSerializer):

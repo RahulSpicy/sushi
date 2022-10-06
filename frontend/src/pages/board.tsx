@@ -7,8 +7,10 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import List from "../components/boards/List";
 import Header from "../components/headers/Header";
-import { onDragEnd } from "../utils/board";
+import { addList, onDragEnd } from "../utils/board";
 import Head from "next/head";
+import { backendUrl } from "../utils/const";
+import { authAxios } from "../utils/authAxios";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;
@@ -158,7 +160,13 @@ const Board = ({}) => {
             {(provided) => (
               <BoardLists ref={provided.innerRef} {...provided.droppableProps}>
                 {board.lists.map((list, index) => (
-                  <List list={list} index={index} key={uuidv4()} />
+                  <List
+                    list={list}
+                    index={index}
+                    key={uuidv4()}
+                    board={board}
+                    setBoard={setBoard}
+                  />
                 ))}
                 {provided.placeholder}
                 {addingList ? (
@@ -188,12 +196,16 @@ const Board = ({}) => {
   );
 };
 
-const CreateList = ({ board, setBoard, setAddingList }) => {
+const CreateList = ({ board, setBoard, setAddingList }: any) => {
   const [title, setTitle] = useState("");
 
-  const onAddList = (e) => {
+  const onAddList = async (e) => {
     e.preventDefault();
-    // TO DO
+    const { data } = await authAxios.post(`${backendUrl}/boards/lists/`, {
+      board: board.id,
+      title,
+    });
+    addList(board, setBoard)(data);
     setAddingList(false);
   };
   return (
