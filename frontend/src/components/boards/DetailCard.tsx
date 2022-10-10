@@ -20,7 +20,6 @@ const DetailCard = ({ card, list, provided }: DetailCardProps) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // const { innerRef, draggableProps, dragHandleProps } = provided;
   return (
     <>
       <Card

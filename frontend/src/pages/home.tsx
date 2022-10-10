@@ -48,6 +48,7 @@ const Home = () => {
   const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
   const { data: boards, addItem: addBoard } = useAxiosGet("/boards/");
   const [userBoards, projectBoards] = filterBoards(boards);
+  const { data: recentlyViewedBoards } = useAxiosGet("/boards/?sort=recent");
 
   if (!boards) return null;
 
@@ -58,17 +59,24 @@ const Home = () => {
       </Head>
       <HomeSidebar projects={projects || []} />
       <div style={{ flex: 5, marginLeft: "50px" }}>
-        <HomeSection>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <AccessTimeOutlinedIcon />
-            <Typography fontWeight={400} variant="h6" ml={1}>
-              Recently Viewed
-            </Typography>
-          </div>
-        </HomeSection>
-        <HomeBoards>
-          <p>todo</p>
-        </HomeBoards>
+        {(recentlyViewedBoards || []).length !== 0 && (
+          <>
+            <HomeSection>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <AccessTimeOutlinedIcon />
+                <Typography fontWeight={400} variant="h6" ml={1}>
+                  Recently Viewed
+                </Typography>
+              </div>
+            </HomeSection>
+            <HomeBoards>
+              {recentlyViewedBoards.map((board) => (
+                <HomeBoard board={board} key={uuidv4()} />
+              ))}
+            </HomeBoards>
+          </>
+        )}
+
         <HomeSection>
           <div style={{ display: "flex", alignItems: "center" }}>
             <PersonOutlineOutlinedIcon />

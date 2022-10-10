@@ -89,15 +89,12 @@ const defaultImageUrl =
 const Project = ({}) => {
   const router = useRouter();
   const id = router.query.id;
-  console.log(id);
 
   const {
     data: project,
     loading,
     setData: setProject,
   } = useAxiosGet(`/projects/${id}/`);
-
-  console.log(project);
 
   const { authUser } = useContext(globalContext);
 
@@ -107,7 +104,6 @@ const Project = ({}) => {
   const { data: boards, addItem: addBoard } = useAxiosGet(
     "/boards?project=" + id
   );
-  console.log("boards", boards);
 
   const handleClosePopover = () => {
     setAnchorEl(null);
