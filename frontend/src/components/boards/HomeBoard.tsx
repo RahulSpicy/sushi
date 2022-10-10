@@ -2,42 +2,18 @@ import styled from "@emotion/styled";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { IconButton, Typography } from "@mui/material";
 import Image from "next/image";
-import { v4 as uuidv4 } from "uuid";
-import bg1 from "../../images/bg1.jpg";
-import MemberListItem from "./MemberListItem";
 import Link from "next/link";
-
-const board = {
-  id: "1",
-  title: "Board 1",
-  image: bg1,
-  members: [
-    {
-      id: "1",
-      full_name: "Sushi",
-    },
-    {
-      id: "2",
-      full_name: "Cookie Monster",
-    },
-    {
-      id: "3",
-      full_name: "Raze",
-    },
-    {
-      id: "4",
-      full_name: "Jett",
-    },
-  ],
-};
+import { v4 as uuidv4 } from "uuid";
+import MemberListItem from "./MemberListItem";
 
 const BoardPreview = styled.div`
-  background: white;
+  background: #f4f5f7;
   padding: 1em;
   border-radius: 5px;
   border: 1px rgba(gray, 0.55) solid;
   position: relative;
   overflow: hidden;
+  margin-right: 1em;
 `;
 
 const BoardPreviewImage = styled.div`
@@ -49,11 +25,9 @@ const BoardPreviewImage = styled.div`
   margin-bottom: 1em;
 `;
 
-// { board }
-
-const HomeBoard = () => {
+const HomeBoard = ({ board }: any) => {
   return (
-    <Link href={`/board`}>
+    <Link href={`/b/${board.id}`}>
       <BoardPreview>
         <IconButton
           sx={{

@@ -5,12 +5,12 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
-import List from "../components/boards/List";
-import Header from "../components/headers/Header";
-import { addList, onDragEnd } from "../utils/board";
+import List from "../../components/boards/List";
+import Header from "../../components/headers/Header";
+import { addList, onDragEnd } from "../../utils/board";
 import Head from "next/head";
-import { backendUrl } from "../utils/const";
-import { authAxios } from "../utils/authAxios";
+import { backendUrl } from "../../utils/const";
+import { authAxios } from "../../utils/authAxios";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;

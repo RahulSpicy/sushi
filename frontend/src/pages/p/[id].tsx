@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import HomeBoard from "../../components/boards/HomeBoard";
 import MemberListItem from "../../components/boards/MemberListItem";
 import Header from "../../components/headers/Header";
 import ChangePermissionsModal from "../../components/modals/ChangePermissionsModal";
@@ -75,6 +76,13 @@ const MemberButtonsContainer = styled.div`
   position: relative;
 `;
 
+const BoardContainer = styled.div`
+  width: 900px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+`;
+
 const defaultImageUrl =
   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80";
 
@@ -96,6 +104,10 @@ const Project = ({}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(0);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { data: boards, addItem: addBoard } = useAxiosGet(
+    "/boards?project=" + id
+  );
+  console.log("boards", boards);
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -181,7 +193,11 @@ const Project = ({}) => {
         </HeaderContent>
       </HeaderContainer>
       <TabPanel value={value} index={0}>
-        Boards
+        <BoardContainer>
+          {(boards || []).map((board) => (
+            <HomeBoard board={board} key={uuidv4()} />
+          ))}
+        </BoardContainer>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <div>
