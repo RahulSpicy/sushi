@@ -13,12 +13,24 @@ from .models import Attachment, Board, Comment, Item, Label, List, Notification
 
 
 class BoardSerializer(serializers.ModelSerializer):
-
     owner = serializers.SerializerMethodField()
+    is_starred = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ["id", "title", "description", "image", "created_at", "owner"]
+        fields = [
+            "id",
+            "title",
+            "description",
+            "image",
+            "created_at",
+            "owner",
+            "is_starred",
+        ]
+
+    def get_is_starred(self, obj):
+        request_user = self.context.get("request").user
+        return request_user.starred_boards.filter(pk=obj.pk).exists()
 
     def get_owner(self, obj):
         object_app = obj.owner._meta.app_label

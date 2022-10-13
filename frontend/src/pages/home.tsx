@@ -3,6 +3,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { IconButton, Typography } from "@mui/material";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -46,8 +47,12 @@ const Home = () => {
   const handleClose = () => setOpen(false);
 
   const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
-  const { data: boards, addItem: addBoard } = useAxiosGet("/boards/");
-  const [userBoards, projectBoards] = filterBoards(boards);
+  const {
+    data: boards,
+    addItem: addBoard,
+    replaceItem: replaceBoard,
+  } = useAxiosGet("/boards/"); // replaceBoard when you star or unstar
+  const [userBoards, projectBoards, starredBoards] = filterBoards(boards);
   const { data: recentlyViewedBoards } = useAxiosGet("/boards/?sort=recent");
 
   if (!boards) return null;
@@ -59,23 +64,49 @@ const Home = () => {
       </Head>
       <HomeSidebar projects={projects || []} />
       <div style={{ flex: 5, marginLeft: "50px" }}>
-        {(recentlyViewedBoards || []).length !== 0 && (
+        {starredBoards.length !== 0 && (
           <>
             <HomeSection>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <AccessTimeOutlinedIcon />
+                <StarBorderIcon />
                 <Typography fontWeight={400} variant="h6" ml={1}>
-                  Recently Viewed
+                  Starred Boards
                 </Typography>
               </div>
             </HomeSection>
             <HomeBoards>
-              {recentlyViewedBoards.map((board) => (
-                <HomeBoard board={board} key={uuidv4()} />
+              {starredBoards.map((board) => (
+                <HomeBoard
+                  board={board}
+                  replaceBoard={replaceBoard}
+                  key={uuidv4()}
+                />
               ))}
             </HomeBoards>
           </>
         )}
+        {(recentlyViewedBoards || []).length !== 0 &&
+          starredBoards.length === 0 && (
+            <>
+              <HomeSection>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <AccessTimeOutlinedIcon />
+                  <Typography fontWeight={400} variant="h6" ml={1}>
+                    Recently Viewed
+                  </Typography>
+                </div>
+              </HomeSection>
+              <HomeBoards>
+                {recentlyViewedBoards.map((board) => (
+                  <HomeBoard
+                    board={board}
+                    replaceBoard={replaceBoard}
+                    key={uuidv4()}
+                  />
+                ))}
+              </HomeBoards>
+            </>
+          )}
 
         <HomeSection>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -91,7 +122,11 @@ const Home = () => {
         </HomeSection>
         <HomeBoards>
           {userBoards.map((board) => (
-            <HomeBoard board={board} key={uuidv4()} />
+            <HomeBoard
+              board={board}
+              replaceBoard={replaceBoard}
+              key={uuidv4()}
+            />
           ))}
         </HomeBoards>
         {projectBoards.map((project) => (
@@ -109,7 +144,11 @@ const Home = () => {
             </HomeSection>
             <BoardContainer>
               {project.boards.map((board) => (
-                <HomeBoard board={board} key={uuidv4()} />
+                <HomeBoard
+                  board={board}
+                  replaceBoard={replaceBoard}
+                  key={uuidv4()}
+                />
               ))}
             </BoardContainer>
           </React.Fragment>

@@ -4,6 +4,8 @@ import { IconButton, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
+import { authAxios } from "../../utils/authAxios";
+import { backendUrl } from "../../utils/const";
 import MemberListItem from "./MemberListItem";
 
 const BoardPreview = styled.div`
@@ -25,7 +27,18 @@ const BoardPreviewImage = styled.div`
   margin-bottom: 1em;
 `;
 
-const HomeBoard = ({ board }: any) => {
+const HomeBoard = ({ board, replaceBoard }: any) => {
+  const toggleFavorite = async (e) => {
+    e.preventDefault(); // Prevent anchor link wrapped around board from redirecting us
+    await authAxios.post(`${backendUrl}/boards/star/`, {
+      board: board.id,
+    });
+    replaceBoard({
+      ...board,
+      is_starred: !board.is_starred,
+    });
+  };
+
   return (
     <Link href={`/b/${board.id}`}>
       <BoardPreview>
@@ -36,8 +49,13 @@ const HomeBoard = ({ board }: any) => {
             position: "absolute",
             zIndex: 1,
           }}
+          onClick={toggleFavorite}
         >
-          <StarBorderIcon sx={{ color: "white" }} />
+          {!board.is_starred ? (
+            <StarBorderIcon sx={{ color: "white" }} />
+          ) : (
+            <StarBorderIcon sx={{ color: "yellow" }} />
+          )}
         </IconButton>
         <BoardPreviewImage>
           <Image

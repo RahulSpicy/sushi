@@ -84,6 +84,22 @@ class TestBoardDetailView:
         assert response.status_code == 404, "Should be inaccessible"
 
 
+class TestBoardStarView:
+    def test_can_favorite(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board, owner=user)
+
+        client = APIClient()
+        client.force_authenticate(user)
+        response = client.post("/boards/star/", {"board": 1})
+        assert response.status_code == 204
+
+        assert user.starred_boards.filter(pk=board.pk).exists()
+
+        response = client.post("/boards/star/", {"board": 1})
+        assert user.starred_boards.filter(pk=board.pk).exists() == False
+
+
 class TestListShowView:
     @pytest.fixture
     def make_list(self):

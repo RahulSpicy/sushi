@@ -12,12 +12,14 @@ from .views import (
     CommentDetail,
     AttachmentDetail,
     AttachmentList,
+    BoardStar,
 )
 
 urlpatterns = [
     path("", BoardList.as_view()),
     path("<int:pk>/", BoardDetail.as_view()),
     path("items/", ItemList.as_view()),
+    path("star/", BoardStar.as_view()),
     path("items/<int:pk>/", ItemDetail.as_view()),
     path("lists/", ListShow.as_view()),
     path("lists/<int:pk>/", ListDetail.as_view()),

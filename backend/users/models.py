@@ -59,6 +59,7 @@ class User(AbstractUser):
     boards = GenericRelation(
         "boards.Board", object_id_field="owner_id", content_type_field="owner_model"
     )
+    starred_boards = models.ManyToManyField("boards.Board", blank=True)
     objects = CustomUserManager()
 
     @property

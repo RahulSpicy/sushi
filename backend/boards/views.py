@@ -78,7 +78,7 @@ class BoardList(generics.ListCreateAPIView):
         )
 
     def post(self, request, *args, **kwargs):
-        serializer = BoardSerializer(data=request.data)
+        serializer = BoardSerializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
             if "project" in request.data.keys():
@@ -123,6 +123,30 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
         cur_time_int = int(timezone.now().strftime("%Y%m%d%H%M%S"))
         r.zadd(redis_key, {board_id: cur_time_int})
         return super().get_object()
+
+
+class BoardStar(APIView):
+    permission_classes = [CanViewBoard]
+
+    def get_board(self, pk):
+        board = get_object_or_404(Board, pk=pk)
+        self.check_object_permissions(self.request, board)
+        return board
+
+    def post(self, request, *args, **kwargs):
+        if "board" in request.data.keys():
+            board_id = request.data["board"]
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        board = self.get_board(board_id)
+
+        if request.user.starred_boards.filter(pk=board.pk).exists():
+            request.user.starred_boards.remove(board)
+        else:
+            request.user.starred_boards.add(board)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ListShow(generics.ListCreateAPIView):
@@ -232,7 +256,9 @@ class AttachmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class NotificationList(APIView):
     def get(self, *args, **kwargs):
-        notifications = Notification.objects.filter(recipient=self.request.user)
+        notifications = Notification.objects.filter(
+            recipient=self.request.user
+        ).order_by("-created_at")
         serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
 

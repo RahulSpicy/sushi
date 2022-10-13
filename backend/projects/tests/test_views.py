@@ -134,11 +134,11 @@ class TestProjectMember:
         (user1, proj) = make_proj
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.get("/projects/members/")
+        response = client.get("/projects/1/members/")
         assert response.status_code == 200
         user2 = mixer.blend(User)
         client.force_authenticate(user2)
-        response = client.get("/projects/members/")
+        response = client.get("/projects/1/members/")
         assert response.status_code == 200
 
     def test_admin_put(self, make_proj):

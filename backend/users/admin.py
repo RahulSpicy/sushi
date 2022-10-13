@@ -4,6 +4,13 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from .models import User
 
 
+class BoardsInline(admin.TabularInline):
+    model = User.starred_boards.through
+    verbose_name = "Starred Board"
+    verbose_name_plural = "Starred Boards"
+    extra = 0
+
+
 class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (
@@ -50,6 +57,8 @@ class UserAdmin(DjangoUserAdmin):
             },
         ),
     )
+
+    inlines = [BoardsInline]
 
 
 admin.site.register(User, UserAdmin)
