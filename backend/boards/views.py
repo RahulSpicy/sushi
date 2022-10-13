@@ -1,7 +1,7 @@
 import redis
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Case, Q, When
+from django.db.models import Q, Case, When
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -10,8 +10,9 @@ from projects.permissions import IsProjectAdminOrMemberReadOnly, IsProjectMember
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Attachment, Board, Comment, Item, Label, List
+from .models import Attachment, Board, Comment, Item, Label, List, Notification
 from .permissions import CanViewBoard
 from .serializers import (
     AttachmentSerializer,
@@ -20,6 +21,7 @@ from .serializers import (
     ItemSerializer,
     LabelSerializer,
     ListSerializer,
+    NotificationSerializer,
 )
 
 r = redis.Redis(
@@ -226,3 +228,16 @@ class AttachmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     permission_classes = [permissions.AllowAny]
+
+
+class NotificationList(APIView):
+    def get(self, *args, **kwargs):
+        notifications = Notification.objects.filter(recipient=self.request.user)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):  # Mark all as read
+        Notification.objects.filter(recipient=self.request.user, unread=True).update(
+            unread=False
+        )
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -5,6 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   AppBar,
   Autocomplete,
+  Badge,
   Button,
   Divider,
   IconButton,
@@ -14,29 +15,37 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import globalContext from "../../context/globalContext";
+import useAxiosGet from "../../hooks/useAxiosGet";
 import logo from "../../images/logo.png";
 import MemberListItem from "../boards/MemberListItem";
-import Link from "next/link";
+import NotificationsModal from "../modals/NotificationsModal";
 
 const top100Films = [
   { title: "The Shawshank Redemption", year: 1994 },
   { title: "The Godfather", year: 1972 },
   { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  { title: "City Lights", year: 1931 },
-  { title: "Psycho", year: 1960 },
-  { title: "The Green Mile", year: 1999 },
 ];
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const { authUser } = useContext(globalContext);
+
+  const { data: notifications, setData: setNotifications } =
+    useAxiosGet("/notifications/");
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   useEffect(() => {
     if (searchQuery !== "") setShowSearch(true);
@@ -111,9 +120,30 @@ const Header = () => {
           <Typography ml={1} fontSize="15px" color="gray">
             Hello, {authUser.full_name.replace(/ .*/, "")}
           </Typography>
-          <IconButton sx={{ marginLeft: "40px", marginRight: "20px" }}>
+          <IconButton
+            sx={{ marginLeft: "40px", marginRight: "20px" }}
+            onClick={handleClick}
+          >
             <NotificationsOutlinedIcon style={{ color: "gray" }} />
           </IconButton>
+          {(notifications || []).find(
+            (notification) => notification.unread == true
+          ) && (
+            <IconButton
+              sx={{ marginLeft: "40px", marginRight: "20px" }}
+              onClick={handleClick}
+            >
+              <Badge badgeContent={1} color="success">
+                <NotificationsOutlinedIcon style={{ color: "gray" }} />
+              </Badge>
+            </IconButton>
+          )}
+          <NotificationsModal
+            handleClosePopover={handleClosePopover}
+            anchorEl={anchorEl}
+            notifications={notifications}
+            setNotifications={setNotifications}
+          />
           <Divider orientation="vertical" flexItem />
           <IconButton sx={{ marginLeft: "20px", marginRight: "10px" }}>
             <MenuOutlinedIcon style={{ color: "gray" }} />

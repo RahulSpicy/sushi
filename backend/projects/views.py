@@ -1,17 +1,24 @@
 import uuid
 import redis
+from boards.models import Notification
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
+from django.db.models import Case, When
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import User
+
 from projects.models import Project, ProjectMembership
 from projects.permissions import IsProjectAdminOrMemberReadOnly
-from projects.serializers import ProjectMembershipSerializer, ProjectSerializer
-from django.db.models import Case, When
+from projects.serializers import (
+    ProjectMembershipSerializer,
+    ProjectSerializer,
+    ShortProjectSerializer,
+)
 
 
 class ProjectList(
@@ -19,7 +26,7 @@ class ProjectList(
 ):
     def get_serializer_class(self):
         if self.request.method == "GET":
-            return ProjectSerializer  # ShortProjectSerializer
+            return ShortProjectSerializer
 
         return ProjectSerializer
 
@@ -104,6 +111,23 @@ class ProjectMemberDetail(APIView):
         )
         if serializer.is_valid():
             serializer.save()
+
+            # Notification
+            if request.data["access_level"] == 2:
+                Notification.objects.create(
+                    actor=request.user,
+                    recipient=pmem.member,
+                    verb="made you admin of",
+                    target=pmem.project,
+                )
+            else:
+                Notification.objects.filter(
+                    verb="made you admin of",
+                    recipient=pmem.member,
+                    target_model=ContentType.objects.get(model="project"),
+                    target_id=pmem.project.id,
+                ).delete()
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -166,6 +190,14 @@ class SendProjectInvite(APIView):
 
                 # if from_email=None, uses DEFAULT_FROM_EMAIL from settings.py
                 send_mail(subject, message, from_email=None, recipient_list=[to_email])
+
+                # Notification
+                Notification.objects.create(
+                    actor=request.user,
+                    recipient=user,
+                    verb="invited you to",
+                    target=project,
+                )
             except User.DoesNotExist:
                 continue
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -195,6 +227,14 @@ class AcceptProjectInvite(APIView):
         ):
             ProjectMembership.objects.create(project=project, member=user)
             r.delete(redis_key)
+
+            # Notification
+            Notification.objects.filter(
+                verb="invited you to",
+                recipient=user,
+                target_model=ContentType.objects.get(model="project"),
+                target_id=project.id,
+            ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

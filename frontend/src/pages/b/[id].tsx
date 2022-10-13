@@ -60,7 +60,7 @@ const Board = ({}) => {
             title: "Hello",
             description: "",
             assigned_to: [],
-            labels: [],
+            labels: [{ color: "red" }],
             attachments: [],
             comments: [],
           },
