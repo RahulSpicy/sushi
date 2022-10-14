@@ -56,7 +56,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = "__all__"
+        exclude = ["list"]
 
 
 class ListSerializer(serializers.ModelSerializer):
@@ -68,9 +68,11 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
     class Meta:
         model = Comment
-        fields = "__all__"
+        exclude = ["item"]
 
 
 class AttachmentSerializer(serializers.ModelSerializer):

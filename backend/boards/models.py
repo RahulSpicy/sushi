@@ -81,6 +81,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="comments")
     body = models.TextField(blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'{self.body[:50]}{"..." if len(self.body) > 50 else ""}'
