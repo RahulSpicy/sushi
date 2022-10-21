@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import { Button, IconButton, Input, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
+import globalContext from "../../context/globalContext";
 import { authAxios } from "../../utils/authAxios";
-import { updateList } from "../../utils/board";
+import { addCard, updateList } from "../../utils/board";
 import { backendUrl } from "../../utils/const";
 import { mergeRefs } from "../../utils/mergeRefs";
 import DraggableCard from "./DraggableCard";
@@ -77,16 +78,22 @@ const ListAddCard = styled(Button)`
   align-self: center;
 `;
 
-const List = ({ list, index, board, setBoard }: any) => {
+const List = ({ list, index }: any) => {
+  const { board, setBoard } = useContext(globalContext);
   const [addingCard, setAddingCard] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [cardTitle, setCardTitle] = useState("");
   const listCards = useRef(null);
 
-  const onAddCard = (e) => {
+  const onAddCard = async (e) => {
     e.preventDefault();
     if (cardTitle.trim() === "") return;
+    const { data } = await authAxios.post(`${backendUrl}/boards/items/`, {
+      list: list.id,
+      title: cardTitle,
+    });
     setAddingCard(false);
+    addCard(board, setBoard)(list.id, data);
   };
 
   useEffect(() => {
@@ -113,12 +120,7 @@ const List = ({ list, index, board, setBoard }: any) => {
                   {list.title}
                 </Typography>
               ) : (
-                <EditList
-                  list={list}
-                  setEditingTitle={setEditingTitle}
-                  board={board}
-                  setBoard={setBoard}
-                />
+                <EditList list={list} setEditingTitle={setEditingTitle} />
               )}
               <IconButton>
                 <MoreHorizOutlinedIcon />
@@ -131,12 +133,12 @@ const List = ({ list, index, board, setBoard }: any) => {
                   ref={mergeRefs(provided.innerRef, listCards)}
                   {...provided.droppableProps}
                 >
-                  {list.items.map((card, index) => (
+                  {list.items.map((card: any, index: number) => (
                     <DraggableCard
                       card={card}
                       list={list}
-                      key={uuidv4()}
                       index={index}
+                      key={uuidv4()}
                     />
                   ))}
                   {provided.placeholder}
@@ -192,10 +194,11 @@ const AddCard = ({ onAddCard, cardTitle, setCardTitle }: any) => (
   </form>
 );
 
-const EditList = ({ list, setEditingTitle, board, setBoard }: any) => {
+const EditList = ({ list, setEditingTitle }: any) => {
+  const { board, setBoard } = useContext(globalContext);
   const [listTitle, setListTitle] = useState(list.title);
 
-  const onEditList = async (e) => {
+  const onEditList = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (listTitle.trim() === "") return;
     const { data } = await authAxios.put(
@@ -204,7 +207,6 @@ const EditList = ({ list, setEditingTitle, board, setBoard }: any) => {
         title: listTitle,
       }
     );
-    console.log(data);
     updateList(board, setBoard)(data);
     setEditingTitle(false);
   };

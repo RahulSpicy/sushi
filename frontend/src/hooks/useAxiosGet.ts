@@ -37,7 +37,7 @@ const useAxiosGet = (url: string, onSite = true) => {
     };
   }, [onSite, url]);
 
-  // Below two functions are only if data is an array
+  // Below three functions are only if data is an array
   const addItem = (item) => {
     setData((prevData) => [...prevData, item]);
   };
@@ -51,6 +51,10 @@ const useAxiosGet = (url: string, onSite = true) => {
     );
   };
 
+  const removeItem = (id) => {
+    setData((prevData) => prevData.filter((item) => item.id !== id));
+  };
+
   return {
     data,
     setData,
@@ -59,6 +63,7 @@ const useAxiosGet = (url: string, onSite = true) => {
     errorMessage,
     addItem,
     replaceItem,
+    removeItem,
   };
 };
 

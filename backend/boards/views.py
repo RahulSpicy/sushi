@@ -262,7 +262,7 @@ class CommentList(generics.ListCreateAPIView):
         item_id = self.request.GET.get("item", None)
 
         item = self.get_item(item_id)
-        return Comment.objects.filter(item=item).order_by("-created_at")
+        return Comment.objects.filter(item=item)
 
     def get(self, request, *args, **kwargs):
 

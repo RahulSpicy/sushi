@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Button, Input, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import List from "../../components/boards/List";
@@ -11,6 +11,9 @@ import { addList, onDragEnd } from "../../utils/board";
 import Head from "next/head";
 import { backendUrl } from "../../utils/const";
 import { authAxios } from "../../utils/authAxios";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import globalContext from "../../context/globalContext";
+import FourOhFour from "../404";
 
 const BoardContainer = styled.div`
   background-color: #f6f7fb;
@@ -44,99 +47,25 @@ const BoardLists = styled.div`
 const Board = ({}) => {
   const router = useRouter();
   const id = router.query.id;
+  const [editingTitle, setEditingTitle] = useState(false);
 
   const [addingList, setAddingList] = useState(false);
-  const [board, setBoard] = useState({
-    id: 1,
-    title: "Hello World",
-    project: "The Boys",
-    lists: [
-      {
-        id: 1,
-        title: "List1",
-        items: [
-          {
-            id: 1,
-            title: "Hello",
-            description: "",
-            assigned_to: [],
-            labels: [{ color: "red" }],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 2,
-            title: "Hello2",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 3,
-            title: "Hello3",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 4,
-            title: "Hello4",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "List2",
-        items: [
-          {
-            id: 5,
-            title: "Hello",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 6,
-            title: "Hello2",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 7,
-            title: "Hello3",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-          {
-            id: 8,
-            title: "Hello4",
-            description: "",
-            assigned_to: [],
-            labels: [],
-            attachments: [],
-            comments: [],
-          },
-        ],
-      },
-    ],
-  }); // Get using route params
+  const {
+    data: board,
+    setData: setBoard,
+    loading,
+  } = useAxiosGet(`/boards/${id}/`);
+
+  const { setBoardContext } = useContext(globalContext);
+
+  useEffect(() => {
+    if (board) {
+      setBoardContext(board, setBoard);
+    }
+  }, [board]);
+
+  if (!board && loading) return null;
+  if (!board && !loading) return <FourOhFour />;
 
   return (
     <>
@@ -145,11 +74,24 @@ const Board = ({}) => {
       </Head>
       <Header />
       <BoardContainer>
-        <Typography variant="h6" fontWeight={500}>
-          {board.title}
-        </Typography>
+        {!editingTitle ? (
+          <Typography
+            variant="h6"
+            fontWeight={500}
+            onClick={() => setEditingTitle(true)}
+          >
+            {board.title}
+          </Typography>
+        ) : (
+          <EditBoard
+            board={board}
+            setEditingTitle={setEditingTitle}
+            setBoard={setBoard}
+          />
+        )}
+
         <Typography variant="caption" marginBottom="10px">
-          {board.project}
+          {board.owner.title}
         </Typography>
         <DragDropContext onDragEnd={onDragEnd(board, setBoard)}>
           <Droppable
@@ -160,13 +102,7 @@ const Board = ({}) => {
             {(provided) => (
               <BoardLists ref={provided.innerRef} {...provided.droppableProps}>
                 {board.lists.map((list, index) => (
-                  <List
-                    list={list}
-                    index={index}
-                    key={uuidv4()}
-                    board={board}
-                    setBoard={setBoard}
-                  />
+                  <List list={list} index={index} key={uuidv4()} />
                 ))}
                 {provided.placeholder}
                 {addingList ? (
@@ -184,7 +120,7 @@ const Board = ({}) => {
                     }}
                     onClick={() => setAddingList(true)}
                   >
-                    Add another list
+                    Add {board.lists.length === 0 ? "a" : "another"} list
                   </Button>
                 )}
               </BoardLists>
@@ -233,7 +169,7 @@ const CreateList = ({ board, setBoard, setAddingList }: any) => {
         sx={{ marginBottom: "1em" }}
       />
       {title.trim() !== "" ? (
-        <Button variant="outlined" fullWidth>
+        <Button variant="outlined" fullWidth onClick={onAddList}>
           Add List
         </Button>
       ) : (
@@ -245,4 +181,28 @@ const CreateList = ({ board, setBoard, setAddingList }: any) => {
   );
 };
 
+const EditBoard = ({ board, setBoard, setEditingTitle }) => {
+  const [title, setTitle] = useState(board.title);
+
+  const onEditTitle = async (e) => {
+    e.preventDefault();
+    if (title.trim() === "") return;
+    const { data } = await authAxios.put(`${backendUrl}/boards/${board.id}/`, {
+      title,
+    });
+    setBoard(data);
+    setEditingTitle(false);
+  };
+  return (
+    <form onSubmit={onEditTitle}>
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        type="text"
+        name="title"
+        placeholder="Enter board title"
+      />
+    </form>
+  );
+};
 export default Board;

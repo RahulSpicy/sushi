@@ -29,7 +29,6 @@ const RegisterForm = () => {
   const handleImageChange = (e: any) => {
     let newData = e.target.files[0];
     setProfilePic(newData);
-    console.log(newData);
   };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {

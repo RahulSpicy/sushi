@@ -7,13 +7,9 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import { Chip, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import LabelPopOver from "./LabelPopOver";
+import { v4 as uuidv4 } from "uuid";
 import MemberListItem from "../boards/MemberListItem";
-
-const user = {
-  full_name: "Hrushikesh Jadhav",
-  profile_pic: "",
-};
+import LabelPopOver from "./LabelPopOver";
 
 const chipStyle = css`
   border-radius: 5px;
@@ -24,7 +20,7 @@ const CardSideBar = styled.div`
   padding: 0.5em 0 0.5em 0.5em;
 `;
 
-const CardEditActions = () => {
+const CardEditActions = ({ card }) => {
   const handleClosePopover = () => {
     setAnchorEl(null);
   };
@@ -90,8 +86,10 @@ const CardEditActions = () => {
         Members
       </Typography>
       <Stack direction="column" spacing={1} width="80%" alignItems="start">
-        <MemberListItem user={user} header="false" />
+        {/* <MemberListItem user={user} header="false" /> */}
+        <Members members={card.assigned_to} />
       </Stack>
+
       <LabelPopOver
         handleClosePopover={handleClosePopover}
         anchorEl={anchorEl}
@@ -99,5 +97,25 @@ const CardEditActions = () => {
     </CardSideBar>
   );
 };
+
+const Members = ({ members }) =>
+  members.length !== 0 && (
+    <>
+      <ul style={{ paddingLeft: "1px" }}>
+        {members.map((member) => (
+          <li
+            key={uuidv4()}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "0.7em",
+            }}
+          >
+            <MemberListItem user={member} header="false" />
+          </li>
+        ))}
+      </ul>
+    </>
+  );
 
 export default CardEditActions;
