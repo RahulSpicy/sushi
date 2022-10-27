@@ -31,7 +31,7 @@ const Labels = ({ labels }: any) => {
   if (labels.length === 0) return null;
   return (
     <div style={{ display: "flex" }}>
-      {labels.map((label) => (
+      {labels.map((label: { color: any }) => (
         <Tag key={uuidv4()} style={{ color: `#${label.color}` }}>
           ___
         </Tag>

@@ -1,5 +1,6 @@
 import pytest
 from mixer.backend.django import mixer
+from ..models import Label
 
 pytestmark = pytest.mark.django_db
 
@@ -12,6 +13,10 @@ class TestBoard:
     def test_str(self):
         board = mixer.blend("boards.Board")
         assert board.title == str(board), "Should check the board name"
+
+    def test_labels_signal(self):
+        board = mixer.blend("boards.Board")
+        assert Label.objects.filter(board=board).count() == 10
 
 
 class TestList:

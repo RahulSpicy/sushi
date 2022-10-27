@@ -57,16 +57,23 @@ const HomeBoard = ({ board, replaceBoard }: any) => {
             <StarBorderIcon sx={{ color: "yellow" }} />
           )}
         </IconButton>
-        <BoardPreviewImage>
-          <Image
-            src={board.image}
-            alt="img"
-            width="220px"
-            height="105px"
-            objectFit="cover"
-            style={{ borderRadius: "5px 5px 0 0" }}
-          />
-        </BoardPreviewImage>
+        {board.color ? (
+          <BoardPreviewImage
+            style={{ height: "52px", backgroundColor: `#${board.color}` }}
+          ></BoardPreviewImage>
+        ) : (
+          <BoardPreviewImage>
+            <Image
+              src={board.image || board.image_url}
+              alt="img"
+              width="220px"
+              height="105px"
+              objectFit="cover"
+              style={{ borderRadius: "5px 5px 0 0" }}
+            />
+          </BoardPreviewImage>
+        )}
+
         <Typography
           variant="body1"
           style={{ marginBottom: board.members ? "0.75em" : 0 }}

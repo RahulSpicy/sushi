@@ -17,7 +17,7 @@ class LabelSerializer(serializers.ModelSerializer):
         model = Label
         exclude = (
             "id",
-            "item",
+            "board",
         )
 
 
@@ -57,22 +57,25 @@ class ListSerializer(serializers.ModelSerializer):
         exclude = ["board"]
 
 
-class BoardSerializer(serializers.ModelSerializer):
+# For homepage, exclude lists
+class ShortBoardSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
-    lists = ListSerializer(many=True, read_only=True)
     is_starred = serializers.SerializerMethodField()
+    list_count = serializers.SerializerMethodField()
+    item_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
         fields = [
             "id",
             "title",
-            "description",
             "image",
-            "created_at",
+            "image_url",
+            "color",
             "owner",
-            "lists",
             "is_starred",
+            "list_count",
+            "item_count",
         ]
 
     def get_is_starred(self, obj):
@@ -87,6 +90,42 @@ class BoardSerializer(serializers.ModelSerializer):
         serializer_module_path = f"{object_app}.serializers.{object_name}Serializer"
         serializer_class = import_string(serializer_module_path)
         return serializer_class(obj.owner).data
+
+    def get_list_count(self, obj):
+        return List.objects.filter(board=obj).count()
+
+    def get_item_count(self, obj):
+        lists = List.objects.filter(board=obj)
+        return Item.objects.filter(list__in=lists).count()
+
+    def validate(self, data):
+        background_keys = ["image", "image_url", "color"]
+        if any(item in data.keys() for item in background_keys) == False:
+            raise serializers.ValidationError("A board background must be provided")
+
+        return data
+
+
+class BoardSerializer(ShortBoardSerializer):
+    lists = ListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Board
+        fields = [
+            "id",
+            "title",
+            "description",
+            "image",
+            "image_url",
+            "color",
+            "created_at",
+            "owner",
+            "lists",
+            "is_starred",
+        ]
+
+    def validate(self, data):
+        return data  # No need to pass in image/image_url/color while editing board
 
 
 class NotificationSerializer(serializers.ModelSerializer):
