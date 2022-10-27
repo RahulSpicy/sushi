@@ -42,8 +42,13 @@ const BoardContainer = styled.div`
 `;
 
 const Home = () => {
+  const [boardProject, setBoardProject] = useState(0); // If 0, we are making a personal board. Else, making board for project with given ID
+
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    setBoardProject(0);
+  };
   const handleClose = () => setOpen(false);
 
   const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
@@ -115,10 +120,16 @@ const Home = () => {
               Personal Boards
             </Typography>
           </div>
+
           <IconButton onClick={handleOpen}>
             <AddOutlinedIcon />
           </IconButton>
-          <AddBoardModal setOpen={open} handleClose={handleClose} />
+          <AddBoardModal
+            setOpen={open}
+            handleClose={handleClose}
+            addBoard={addBoard}
+            project={boardProject}
+          />
         </HomeSection>
         <HomeBoards>
           {userBoards.map((board) => (

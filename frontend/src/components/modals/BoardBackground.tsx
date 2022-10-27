@@ -2,14 +2,19 @@ import styled from "@emotion/styled";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { Button, IconButton, Popover, Typography } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
-import { colors, images } from "../../utils/const";
+import { Dispatch, SetStateAction } from "react";
+import { v4 as uuidv4 } from "uuid";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import { colors } from "../../utils/const";
+import { convertUnsplashToOptions, getAddBoardStyle } from "../../utils/getBg";
 
 interface BoardBackgroundProps {
   anchorEl: HTMLElement | null;
   handleClosePopover: () => void;
   setShowBoardModal: Dispatch<SetStateAction<boolean>>;
-  setBackground: any;
+  extraBackground: any;
+  setExtraBackground: Dispatch<SetStateAction<any>>;
+  setSelectedBackground: Dispatch<SetStateAction<any>>;
 }
 
 const BoardBackgroundContainer = styled.div`
@@ -64,12 +69,20 @@ const BoardBackground: React.FC<BoardBackgroundProps> = ({
   anchorEl,
   handleClosePopover,
   setShowBoardModal,
-  setBackground,
+  extraBackground,
+  setExtraBackground,
+  setSelectedBackground,
 }) => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const [selected, setSelected] = useState({});
+  const accessKey = process.env.UNSPLASH_API_ACCESS_KEY;
+
+  const { data } = useAxiosGet(
+    `https://api.unsplash.com/photos?client_id=${accessKey}&page=2`,
+    false
+  );
+  const images = convertUnsplashToOptions(data);
 
   return (
     <Popover
@@ -99,17 +112,21 @@ const BoardBackground: React.FC<BoardBackgroundProps> = ({
             Photos
           </Typography>
           <CreateBlock>
-            {images.map((s) => {
-              return (
-                <ListItem key={s}>
-                  <ColorBoxButton style={s} onClick={setSelected}>
-                    {selected === s ? (
-                      <CheckOutlinedIcon style={{ color: "white" }} />
-                    ) : null}
-                  </ColorBoxButton>
-                </ListItem>
-              );
-            })}
+            {images.slice(0, 6).map((imageOption) => (
+              <ListItem key={uuidv4()}>
+                <ColorBoxButton
+                  style={getAddBoardStyle(...imageOption)}
+                  onClick={() => {
+                    setExtraBackground(imageOption);
+                    setSelectedBackground(0);
+                  }}
+                >
+                  {extraBackground?.[0] === imageOption?.[0] ? (
+                    <CheckOutlinedIcon style={{ color: "white" }} />
+                  ) : null}
+                </ColorBoxButton>
+              </ListItem>
+            ))}
           </CreateBlock>
         </div>
         <div>
@@ -117,42 +134,27 @@ const BoardBackground: React.FC<BoardBackgroundProps> = ({
             Colors
           </Typography>
           <CreateBlock>
-            {colors.map((s) => {
-              return (
-                <ListItem key={s}>
-                  <ColorBoxButton style={s} onClick={setSelected}>
-                    {selected === s ? (
-                      <CheckOutlinedIcon style={{ color: "white" }} />
-                    ) : null}
-                  </ColorBoxButton>
-                </ListItem>
-              );
-            })}
+            {colors.slice(0, 6).map((colorOption) => (
+              <ListItem key={uuidv4()}>
+                <ColorBoxButton
+                  style={getAddBoardStyle(...colorOption)}
+                  onClick={() => {
+                    setExtraBackground(colorOption);
+                    setSelectedBackground(0);
+                  }}
+                >
+                  {extraBackground?.[0] === colorOption[0] ? (
+                    <CheckOutlinedIcon style={{ color: "white" }} />
+                  ) : null}
+                </ColorBoxButton>
+              </ListItem>
+            ))}
+            <ListItem style={{ display: "none" }}>
+              <Button></Button>
+            </ListItem>
           </CreateBlock>
         </div>
       </BoardBackgroundContainer>
-      <Button
-        onClick={() => {
-          setShowBoardModal(false);
-          if (
-            selected.backgroundColor === undefined &&
-            selected.backgroundImage === undefined
-          )
-            return;
-          else setBackground(selected);
-        }}
-        variant="outlined"
-        style={{
-          alignSelf: "center",
-          width: "60%",
-          fontWeight: "600",
-          marginTop: "20px",
-          marginBottom: "20px",
-          marginLeft: "55px",
-        }}
-      >
-        Select Background
-      </Button>
     </Popover>
   );
 };

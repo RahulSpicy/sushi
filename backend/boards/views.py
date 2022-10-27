@@ -144,7 +144,7 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
             serializer.save(image_url="", color="")
         elif "image_url" in req_data:
             serializer.save(image=None, color="")
-        else:
+        elif "color" in req_data:
             serializer.save(image=None, image_url="")
 
 
@@ -348,8 +348,10 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             item = serializer.save(image_url="", color="")
         elif "image_url" in req_data:
             item = serializer.save(image=None, color="")
-        else:
+        elif "color" in req_data:
             item = serializer.save(image=None, image_url="")
+        else:
+            item = serializer.save()
 
         # Assigning or removing someone?
         if "assigned_to" in req_data:

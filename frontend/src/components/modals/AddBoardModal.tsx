@@ -3,62 +3,19 @@ import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Box, Button, IconButton, Input, Modal } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import { authAxios } from "../../utils/authAxios";
+import { backendUrl } from "../../utils/const";
+import { getAddBoardStyle, getBoardBackgroundOptions } from "../../utils/getBg";
 import BoardBackground from "./BoardBackground";
 
 interface AddBoardModalProps {
   setOpen: boolean;
   handleClose: (open: boolean) => void;
-}
-
-const options = [
-  [
-    "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1391&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1524129426126-1b85d8c74fd2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=614&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1625472603525-6b77bfed6165?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1198&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1661094715908-52ed93067985?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80",
-    true,
-  ],
-  ["#4680FF", false],
-  ["red", false],
-  ["#FFB64D", false],
-  ["purple", false],
-];
-
-function deepEqual(object1, object2) {
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (const key of keys1) {
-    const val1 = object1[key];
-    const val2 = object2[key];
-    const areObjects = isObject(val1) && isObject(val2);
-    if (
-      (areObjects && !deepEqual(val1, val2)) ||
-      (!areObjects && val1 !== val2)
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function isObject(object) {
-  return object != null && typeof object === "object";
+  addBoard: any;
+  project: any;
 }
 
 const ModalContainer = styled(Box)`
@@ -118,15 +75,14 @@ const ColorBoxButton = styled(Button)`
 const AddBoardModal: React.FC<AddBoardModalProps> = ({
   setOpen,
   handleClose,
+  addBoard,
+  project,
 }) => {
-  const [background, setBackground] = useState(
-    bgImage(
-      "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1391&q=80"
-    )
-  );
+  const [selectedBackground, setSelectedBackground] = useState(0);
+  const [extraBackground, setExtraBackground] = useState(null);
   const [title, setTitle] = useState("");
   const [showBoardModal, setShowBoardModal] = useState(false);
-  const cardElem = useRef(null);
+  const boardElem = useRef(null);
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -137,93 +93,130 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setShowBoardModal(true);
-    setBackground(bgImage(event.currentTarget.value));
   };
+
+  const onSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    const bg = options[selectedBackground];
+    const formData = { title };
+    if (project !== 0) formData.project = project;
+    if (bg[1]) {
+      // Image_url
+      formData.image_url = bg[2];
+    } else {
+      // color
+      formData.color = bg[0].substring(1); // We don't store # char in backend
+    }
+    const { data } = await authAxios.post(`${backendUrl}/boards/`, formData);
+    addBoard(data);
+    setShowBoardModal(false);
+    handleClose(false);
+  };
+
+  const accessKey = process.env.UNSPLASH_API_ACCESS_KEY;
+  const { data } = useAxiosGet(
+    `https://api.unsplash.com/photos?client_id=${accessKey}`,
+    false
+  );
+
+  const options = useMemo(() => getBoardBackgroundOptions(data), [data]); // So we don't reshuffle on state change
+  if (extraBackground) options[0] = extraBackground;
+
+  useEffect(() => {
+    if (selectedBackground !== 0) setExtraBackground(null);
+  }, [selectedBackground]);
+
+  if (!data) return null;
+
   return (
     <Modal open={setOpen} onClose={handleClose}>
       <ModalContainer>
+        {showBoardModal ? (
+          <BoardBackground
+            handleClosePopover={handleClosePopover}
+            anchorEl={anchorEl}
+            setShowBoardModal={setShowBoardModal}
+            extraBackground={extraBackground}
+            setExtraBackground={setExtraBackground}
+            setSelectedBackground={setSelectedBackground}
+          />
+        ) : null}
         <div>
-          <TitleBlock style={background}>
-            <TitleInput
-              placeholder="Add board title"
-              onChange={(t) => {
-                setTitle(t.target.value);
-              }}
-            />
-            <CloseContainer>
-              <IconButton
-                sx={{ height: "30px", width: "30px", color: "white" }}
-                // onClick={handleClose}
+          <form onSubmit={onSubmit}>
+            <TitleBlock
+              style={getAddBoardStyle(...options[selectedBackground])}
+            >
+              <TitleInput
+                placeholder="Add board title"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+              />
+              <CloseContainer>
+                <IconButton
+                  sx={{ height: "30px", width: "30px", color: "white" }}
+                  onClick={handleClose}
+                >
+                  <CloseIcon sx={{ fontSize: "20px" }} />
+                </IconButton>
+              </CloseContainer>
+            </TitleBlock>
+            {title.trim() === "" ? (
+              <Button
+                variant="contained"
+                type="submit"
+                disabled
+                style={{
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "0.85em 2em",
+                  marginTop: "0.5em",
+                  backgroundColor: "white",
+                  color: "black",
+                }}
               >
-                <CloseIcon sx={{ fontSize: "20px" }} />
-              </IconButton>
-            </CloseContainer>
-          </TitleBlock>
-          {title.trim() !== "" ? (
-            <Button
-              variant="contained"
-              type="submit"
-              style={{
-                width: "100%",
-                textAlign: "center",
-                padding: "0.85em 2em",
-                marginTop: "0.5em",
-                backgroundColor: "white",
-                color: "black",
-              }}
-            >
-              Create Board
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              type="submit"
-              disabled
-              style={{
-                width: "100%",
-                textAlign: "center",
-                padding: "0.85em 2em",
-                marginTop: "0.5em",
-              }}
-            >
-              Create Board
-            </Button>
-          )}
+                Create Board
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                type="submit"
+                style={{
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "0.85em 2em",
+                  marginTop: "0.5em",
+                }}
+              >
+                Create Board
+              </Button>
+            )}
+          </form>
         </div>
-        <div style={{ marginLeft: "0.5em", width: "250px" }} ref={cardElem}>
+        <div style={{ marginLeft: "0.5em", width: "250px" }} ref={boardElem}>
           {options.map((option, index) => (
             <ColorBoxButton
-              key={index}
-              style={bgImage(...option)}
+              key={uuidv4()}
+              style={getAddBoardStyle(...option)}
               onClick={() => {
-                setBackground(bgImage(...option));
+                setSelectedBackground(index);
               }}
             >
-              {deepEqual(background, bgImage(...option)) ? (
+              {" "}
+              {selectedBackground == index && (
                 <CheckOutlinedIcon style={{ color: "white" }} />
-              ) : null}
+              )}{" "}
             </ColorBoxButton>
           ))}
           <ColorBoxButton onClick={handleClick}>
             <MoreHorizIcon />
           </ColorBoxButton>
         </div>
-        {showBoardModal ? (
-          <BoardBackground
-            handleClosePopover={handleClosePopover}
-            anchorEl={anchorEl}
-            setShowBoardModal={setShowBoardModal}
-            setBackground={setBackground}
-          />
-        ) : null}
       </ModalContainer>
     </Modal>
   );
-};
-
-const bgImage = (bg, img = true) => {
-  if (img) return { backgroundImage: `url(${bg})`, backgroundSize: "cover" };
-  return { backgroundColor: bg };
 };
 
 export default AddBoardModal;
