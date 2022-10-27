@@ -219,7 +219,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({
             </CardContentSide>
           </Grid>
           <Grid item xs={3}>
-            <CardEditActions card={card} />
+            <CardEditActions card={card} list={list} />
           </Grid>
         </Grid>
       </CardContainer>

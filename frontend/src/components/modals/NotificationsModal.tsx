@@ -10,6 +10,9 @@ import Labels from "../boards/Labels";
 import MemberListItem from "../boards/MemberListItem";
 import dog from "../../images/dog.svg";
 import CommentIcon from "@mui/icons-material/Comment";
+import SendIcon from "@mui/icons-material/Send";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 
 interface NotificationsModalProps {
   anchorEl: HTMLElement | null;
@@ -71,12 +74,12 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({
   const notificationsToShow = showAll
     ? notifications || []
     : (notifications || []).filter(
-        (notification) => notification.unread === true
+        (notification: { unread: boolean }) => notification.unread === true
       );
 
   const markAllRead = async () => {
     await authAxios.post(`${backendUrl}/notifications/`);
-    const newNotifications = notifications.map((notification) => ({
+    const newNotifications = notifications.map((notification: any) => ({
       ...notification,
       unread: false,
     }));
@@ -117,8 +120,9 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({
             </Button>
           )}
         </ModalFilter>
-        {notificationsToShow.map((notification) => (
-          <Notification notification={notification} key={notification} />
+        {notificationsToShow.map((notification: any) => (
+          // eslint-disable-next-line react/jsx-key
+          <Notification notification={notification} />
         ))}
         {notificationsToShow.length === 0 && (
           <NoNotification>
@@ -137,7 +141,7 @@ const appendTargetTitleVerbs = [
   "made you admin of",
 ];
 
-const formatNotification = (notification) => {
+const formatNotification = (notification: any) => {
   if (appendTargetTitleVerbs.includes(notification.verb))
     return `${notification.verb} ${notification.target.title}`;
   else if (notification.verb === "commented")
@@ -145,13 +149,14 @@ const formatNotification = (notification) => {
 };
 
 const iconMap = {
-  "assigned you to": "fal fa-user-plus",
-  "invited you to": "fal fa-paper-plane",
-  "made you admin of": "fal fa-arrow-up",
+  "assigned you to": <PersonAddAltIcon />,
+  "invited you to": <SendIcon />,
+  "made you admin of": <ArrowUpwardIcon />,
   commented: <CommentIcon />,
 };
 
 const Notification = ({ notification }: any) => {
+  console.log(notification);
   const { actor, verb, target, target_model, created_at } = notification;
   return (
     <NotificationContainer>
@@ -174,7 +179,7 @@ const Notification = ({ notification }: any) => {
         </Typography>
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}>
-        <CommentIcon />
+        {iconMap[verb]}
         <Typography>{formatNotification(notification)}</Typography>
       </div>
     </NotificationContainer>

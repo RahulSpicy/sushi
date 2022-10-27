@@ -20,7 +20,7 @@ const CardSideBar = styled.div`
   padding: 0.5em 0 0.5em 0.5em;
 `;
 
-const CardEditActions = ({ card }) => {
+const CardEditActions = ({ card, list }) => {
   const handleClosePopover = () => {
     setAnchorEl(null);
   };
@@ -93,6 +93,8 @@ const CardEditActions = ({ card }) => {
       <LabelPopOver
         handleClosePopover={handleClosePopover}
         anchorEl={anchorEl}
+        card={card}
+        list={list}
       />
     </CardSideBar>
   );

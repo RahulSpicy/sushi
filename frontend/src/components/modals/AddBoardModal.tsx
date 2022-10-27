@@ -114,7 +114,8 @@ const AddBoardModal: React.FC<AddBoardModalProps> = ({
     handleClose(false);
   };
 
-  const accessKey = process.env.UNSPLASH_API_ACCESS_KEY;
+  const accessKey = "ChMO0QbHsNNPtsUiVhepzaS1s-6JSjzwRMhh-YV-k_I";
+  // const accessKey = process.env.UNSPLASH_API_ACCESS_KEY;
   const { data } = useAxiosGet(
     `https://api.unsplash.com/photos?client_id=${accessKey}`,
     false

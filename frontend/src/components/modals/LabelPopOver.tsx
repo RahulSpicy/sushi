@@ -5,12 +5,20 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import { Button, IconButton, Input, Popover, Typography } from "@mui/material";
-import { useRef, useState } from "react";
-import { colors } from "../../utils/const";
+import { useContext, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import globalContext from "../../context/globalContext";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import { authAxios } from "../../utils/authAxios";
+import { updateCard } from "../../utils/board";
+import { backendUrl, colors } from "../../utils/const";
+import { getAddBoardStyle } from "../../utils/getBg";
 
 interface LabelPopOverProps {
   anchorEl: HTMLElement | null;
   handleClosePopover: () => void;
+  list: any;
+  card: any;
 }
 
 const ColorListContainer = styled.ul`
@@ -64,30 +72,52 @@ const CreateBlock = styled.ul`
 
 const zipWith3 = (xs, ys, zs, f) => xs.map((n, i) => f(n, ys[i], zs[i]));
 
+const getLiContent = (data, selected) => {
+  if (!data) return [];
+
+  return data.map((label) => {
+    const checked =
+      selected.find((selectedLabel) => selectedLabel.id === label.id) !==
+      undefined;
+    return {
+      ...label,
+      style: {
+        backgroundColor: `#${label.color}`,
+      },
+      checked,
+    };
+  });
+};
+
 const LabelPopOver: React.FC<LabelPopOverProps> = ({
   anchorEl,
   handleClosePopover,
+  list,
+  card,
 }) => {
+  const { board, setBoard } = useContext(globalContext);
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   const [showCreateLabel, setShowCreateLabel] = useState(false);
   const labelElem = useRef(null);
-  const [liId, setLiId] = useState(-1);
-  const [liContent, setLiContent] = useState(
-    zipWith3(
-      colors,
-      Array(colors.length).fill(""),
-      Array(colors.length).fill(false),
-      (style, content, checked) => {
-        return {
-          style: style,
-          content: content,
-          checked: checked,
-        };
-      }
-    )
+  const [label, setLabel] = useState(null);
+  const { data, replaceItem } = useAxiosGet(
+    `/boards/labels/?board=${board.id}`
   );
+
+  const liContent = getLiContent(data, card.labels);
+
+  const toggleLabel = async (labelId) => {
+    const { data } = await authAxios.put(
+      `${backendUrl}/boards/items/${card.id}/`,
+      {
+        title: card.title,
+        labels: labelId,
+      }
+    );
+    updateCard(board, setBoard)(list.id, data);
+  };
 
   return (
     <Popover
@@ -108,9 +138,8 @@ const LabelPopOver: React.FC<LabelPopOverProps> = ({
         <CreateLabel
           labelElem={labelElem}
           setShowCreateLabel={setShowCreateLabel}
-          liContent={liContent}
-          setLiContent={setLiContent}
-          liId={liId}
+          label={label}
+          replaceItem={replaceItem}
         />
       ) : (
         <LabelContainer ref={labelElem}>
@@ -122,45 +151,35 @@ const LabelPopOver: React.FC<LabelPopOverProps> = ({
           </HeaderContainer>
           <div>
             <ColorListContainer>
-              {liContent.map((x, index) => (
-                <ColorList key={index}>
-                  <ColorListItem
-                    onClick={() => {
-                      setLiContent((it) => {
-                        return it.map((item, idx) => {
-                          let nitem;
-                          if (idx === index) {
-                            nitem = { ...item };
-                            nitem.checked = !item.checked;
-                            return nitem;
-                          }
-                          return item;
-                        });
-                      });
-                    }}
-                    style={x.style}
-                  >
-                    {x.content}
-                    {x.checked ? (
-                      <CheckOutlinedIcon
-                        style={{
-                          float: "right",
-                          marginRight: "0.6em",
-                        }}
-                      />
-                    ) : null}
-                  </ColorListItem>
-                  <IconButton
-                    onClick={() => {
-                      setShowCreateLabel(true);
-                      setLiId(index);
-                    }}
-                    style={{ marginLeft: "1em" }}
-                  >
-                    <CreateOutlinedIcon />
-                  </IconButton>
-                </ColorList>
-              ))}
+              {liContent.map((label) => {
+                return (
+                  <ColorList key={uuidv4()}>
+                    <ColorListItem
+                      onClick={() => toggleLabel(label.id)}
+                      style={label.style}
+                    >
+                      {label.title}
+                      {label.checked ? (
+                        <CheckOutlinedIcon
+                          style={{
+                            float: "right",
+                            marginRight: "0.6em",
+                          }}
+                        />
+                      ) : null}
+                    </ColorListItem>
+                    <IconButton
+                      onClick={() => {
+                        setShowCreateLabel(true);
+                        setLabel(label);
+                      }}
+                      style={{ marginLeft: "1em" }}
+                    >
+                      <CreateOutlinedIcon />
+                    </IconButton>
+                  </ColorList>
+                );
+              })}
             </ColorListContainer>
           </div>
         </LabelContainer>
@@ -169,22 +188,24 @@ const LabelPopOver: React.FC<LabelPopOverProps> = ({
   );
 };
 
-const CreateLabel = ({
-  labelElem,
-  setShowCreateLabel,
-  liContent,
-  setLiContent,
-  liId,
-}) => {
-  const [content, setContent] = useState("");
-  const [color, setColor] = useState(liContent[liId].style);
+const CreateLabel = ({ labelElem, setShowCreateLabel, label, replaceItem }) => {
+  const [title, setTitle] = useState(label.title);
+  const [color, setColor] = useState(label.color);
   return (
     <LabelContainer style={{ width: "25em" }}>
       <HeaderContainer>
-        <IconButton onClick={() => setShowCreateLabel(false)}>
+        <IconButton
+          style={{ marginRight: "auto", marginLeft: 0 }}
+          onClick={() => setShowCreateLabel(false)}
+        >
           <KeyboardArrowLeftOutlinedIcon />
         </IconButton>
-        <Typography variant="body1">Create</Typography>
+        <Typography
+          variant="body1"
+          style={{ marginRight: "auto", marginLeft: 0 }}
+        >
+          Create
+        </Typography>
       </HeaderContainer>
 
       <div
@@ -200,7 +221,8 @@ const CreateLabel = ({
         <Input
           placeholder="Enter label name"
           type="text"
-          onChange={(t) => setContent(t.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
 
@@ -209,50 +231,46 @@ const CreateLabel = ({
           Select a color
         </Typography>
         <CreateBlock>
-          {colors.map((x) => {
+          {colors.map((colorOption) => {
             return (
               <li
                 style={{
                   marginBottom: "0.5em",
                   marginRight: "0.7em",
                 }}
-                key={x}
+                key={uuidv4()}
               >
                 <Button
                   className={
-                    color === x
+                    color === colorOption[0].substring(1)
                       ? css`
                           filter: brightness(90%);
                         `
                       : ""
                   }
-                  onClick={() => setColor(x)}
-                  style={x}
+                  onClick={() => setColor(colorOption[0].substring(1))}
+                  style={getAddBoardStyle(...colorOption)}
                 >
-                  {color === x ? (
+                  {color === colorOption[0].substring(1) ? (
                     <CheckOutlinedIcon style={{ color: "white" }} />
                   ) : null}
                 </Button>
               </li>
             );
           })}
-          {/* <li
-            style={{
-              marginBottom: "0.5em",
-              marginRight: "0.7em",
-              alignSelf: "center",
-            }}
-          >
-            <Button>No Color</Button>
-          </li> */}
         </CreateBlock>
       </div>
       <Button
-        onClick={() => {
+        onClick={async () => {
+          const { data } = await authAxios.put(
+            `${backendUrl}/boards/labels/${label.id}/`,
+            {
+              title,
+              color,
+            }
+          );
+          replaceItem(data);
           setShowCreateLabel(false);
-          if (content !== "") liContent[liId].content = content;
-          liContent[liId].style = color;
-          setLiContent(liContent);
         }}
         variant="outlined"
         style={{
@@ -263,7 +281,7 @@ const CreateLabel = ({
           marginBottom: "20px",
         }}
       >
-        Create
+        Save
       </Button>
     </LabelContainer>
   );
