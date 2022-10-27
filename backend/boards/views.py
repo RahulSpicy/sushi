@@ -49,6 +49,7 @@ class BoardList(generics.ListCreateAPIView):
 
         project_id = self.request.GET.get("project", None)
         sort = self.request.GET.get("sort", None)
+        search = self.request.GET.get("q", None)
 
         if sort == "recent":
             redis_key = f"{self.request.user.username}:RecentlyViewedBoards"
@@ -63,7 +64,7 @@ class BoardList(generics.ListCreateAPIView):
             project_ids = ProjectMembership.objects.filter(
                 member=self.request.user
             ).values_list("project__id", flat=True)
-            return Board.objects.filter(
+            queryset = Board.objects.filter(
                 Q(
                     owner_id=self.request.user.id,
                     owner_model=ContentType.objects.get(model="user"),
@@ -73,11 +74,16 @@ class BoardList(generics.ListCreateAPIView):
                     owner_model=ContentType.objects.get(model="project"),
                 )
             )
+        else:
+            queryset = Board.objects.filter(
+                owner_id=project_id,
+                owner_model=ContentType.objects.get(model="project"),
+            )
+            project = self.get_project(project_id)
 
-        project = self.get_project(project_id)
-        return Board.objects.filter(
-            owner_id=project_id, owner_model=ContentType.objects.get(model="project")
-        )
+        if search is not None:
+            return queryset.filter(title__icontains=search)[:2]
+        return queryset
 
     def post(self, request, *args, **kwargs):
         serializer = ShortBoardSerializer(
@@ -228,15 +234,38 @@ class ItemList(generics.ListCreateAPIView):
     def get_queryset(self, *args, **kwargs):
 
         list_id = self.request.GET.get("list", None)
+        search = self.request.GET.get("q", None)
 
-        list = self.get_list(list_id)
+        if list_id is not None:
+            list = self.get_list(list_id)
+
+        if search is not None:
+            project_ids = ProjectMembership.objects.filter(
+                member=self.request.user
+            ).values_list("project__id", flat=True)
+            boards = Board.objects.filter(
+                Q(
+                    owner_id__in=project_ids,
+                    owner_model=ContentType.objects.get(model="project"),
+                )
+                | Q(
+                    owner_id=self.request.user.id,
+                    owner_model=ContentType.objects.get(model="user"),
+                )
+            )
+            if list_id is not None:
+                return Item.objects.filter(list=list, title__icontains=search)[:2]
+            lists = List.objects.filter(board__in=boards)
+            return Item.objects.filter(list__in=lists, title__icontains=search)[:2]
+
         return Item.objects.filter(list=list).order_by("order")
 
     def get(self, request, *args, **kwargs):
 
         list_id = self.request.GET.get("list", None)
+        search = self.request.GET.get("q", None)
 
-        if list_id is None:
+        if list_id is None and search is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return super().get(request, *args, **kwargs)
@@ -271,6 +300,12 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             return label
         return None
 
+    def get_list(self, pk, board):
+        list = get_object_or_404(List, pk=pk)
+        if board == list.board:
+            return list
+        return None
+
     def get_object(self):
         pk = self.kwargs.get("pk")
         item = get_object_or_404(Item, pk=pk)
@@ -292,6 +327,14 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             if label is None:
                 return Response(
                     {"labels": ["This label doees not belong to this board"]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        if "list" in request.data:
+            list = self.get_list(request.data["list"], item.list.board)
+            if list is None:
+                return Response(
+                    {"list": ["This list doesn't belong to this baord"]},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -325,6 +368,10 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
                 item.labels.remove(label)
             else:
                 item.labels.add(label)
+
+        if "list" in req_data:
+            list = self.get_list(req_data["list"], item.list.board)
+            serializer.save(list=list)
 
 
 class CommentList(generics.ListCreateAPIView):
