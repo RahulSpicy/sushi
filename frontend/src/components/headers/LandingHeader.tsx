@@ -1,10 +1,4 @@
-import { css } from "@emotion/css";
 import styled from "@emotion/styled";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Image from "next/image";
-import logo from "../../images/logo.png";
-import { btn } from "../../styles";
 import Link from "next/link";
 
 const LandingPageHeader = styled.header`
@@ -16,7 +10,6 @@ const LandingPageHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: white;
   background: transparent;
 `;
 
@@ -30,11 +23,6 @@ const Section = styled.section`
   &:last-of-type {
     margin-right: 2em;
   }
-`;
-
-const HeaderList = styled.ul`
-  display: flex;
-  align-items: center;
 `;
 
 const HeaderListItem = styled.li`
@@ -56,44 +44,25 @@ export const LandingHeader: React.FC<LandingHeaderProps> = () => {
   return (
     <LandingPageHeader>
       <Section>
-        <div
-          className={css`
-            display: flex;
-            flex-direction: row;
-          `}
-        >
-          <Image
-            src={logo}
-            alt="sushi logo"
-            height={35}
-            width={35}
-            objectFit="cover"
-          />
-          <Typography variant="h5" ml={1}>
-            SUSHI
-          </Typography>
-        </div>
+        <h1 className="font-bold text-black tracking-wider text-2xl">Sushi</h1>
       </Section>
       <Section>
-        <HeaderList>
-          <HeaderListItem>Tour</HeaderListItem>
-          <HeaderListItem>Pricing</HeaderListItem>
-          <HeaderListItem>Learn</HeaderListItem>
-        </HeaderList>
-      </Section>
-      <Section>
-        <HeaderList>
+        <ul className="flex items-center">
           <HeaderListItem>
             <Link href="/login">
-              <a style={{ textDecoration: "none", color: "white" }}>Login</a>
+              <a className="text-black font-medium no-underline text-lg">
+                Login
+              </a>
             </Link>
           </HeaderListItem>
           <HeaderListItem>
             <Link href="/register">
-              <Button className={btn}>Sign Up</Button>
+              <button className="bg-black text-white font-medium p-3 rounded-lg">
+                Sign Up
+              </button>
             </Link>
           </HeaderListItem>
-        </HeaderList>
+        </ul>
       </Section>
     </LandingPageHeader>
   );
