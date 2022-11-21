@@ -13,3 +13,7 @@ Project Management Tool(Trello Clone)
 - Redis
 - Django REST Framework
 - Material UI
+
+### Figma
+
+[Here](https://www.figma.com/file/n4qrw28f4Pj5onbsO4nxMQ/Sushi?node-id=0%3A1&t=ebBV9rR1QQYgtmxs-1)

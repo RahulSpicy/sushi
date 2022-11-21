@@ -17,24 +17,11 @@ const Section = styled.section`
   margin: 1em 0;
 
   &:first-of-type {
-    margin-left: 2em;
+    margin-left: 3.5em;
   }
 
   &:last-of-type {
-    margin-right: 2em;
-  }
-`;
-
-const HeaderListItem = styled.li`
-  margin: 0 0.75em;
-  list-style: none;
-
-  &:first-of-type {
-    margin-left: 0;
-  }
-
-  &:last-of-type {
-    margin-right: 0;
+    margin-right: 3.5em;
   }
 `;
 
@@ -44,24 +31,26 @@ export const LandingHeader: React.FC<LandingHeaderProps> = () => {
   return (
     <LandingPageHeader>
       <Section>
-        <h1 className="font-bold text-black tracking-wider text-2xl">Sushi</h1>
+        <h1 className="font-bold text-black tracking-wider text-2xl font-mono">
+          Sushi
+        </h1>
       </Section>
       <Section>
-        <ul className="flex items-center">
-          <HeaderListItem>
+        <ul className="flex items-center font-mono">
+          <li className="">
             <Link href="/login">
               <a className="text-black font-medium no-underline text-lg">
                 Login
               </a>
             </Link>
-          </HeaderListItem>
-          <HeaderListItem>
+          </li>
+          <li className="ml-8">
             <Link href="/register">
-              <button className="bg-black text-white font-medium p-3 rounded-lg">
+              <button className="bg-black text-white font-medium px-4 py-3 rounded-lg hover:bg-[#373737]">
                 Sign Up
               </button>
             </Link>
-          </HeaderListItem>
+          </li>
         </ul>
       </Section>
     </LandingPageHeader>

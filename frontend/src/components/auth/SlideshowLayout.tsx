@@ -1,54 +1,21 @@
-import styled from "@emotion/styled";
 import Image from "next/image";
-import bg from "../../images/slideshow-1.jpg";
-
-const Slideshow = styled.div`
-  position: absolute;
-  z-index: 1;
-  position: fixed;
-  left: 35%;
-  height: 100%;
-  width: 100%;
-`;
-
-const SplashTextContainer = styled.div`
-  font-size: large;
-  position: absolute;
-  z-index: 2;
-  color: white;
-  bottom: 100px;
-  left: 100px;
-`;
-
-const Splashtext = styled.h1`
-  font-size: 3.4rem;
-  font-weight: 600;
-  line-height: 5rem;
-`;
+import teamwork from "../../images/teamwork.png";
 
 const SlideshowLayout = () => {
   return (
-    <Slideshow id="slideshow-container">
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-        }}
-        id="slideshow"
-      >
-        <Image
-          src={bg}
-          alt="bg"
-          objectFit="fill"
-          style={{ filter: "brightness(70%)" }}
-        />
+    <div className="z-10 fixed left-1/3 h-screen w-4/6 bg-[#f6f6f8] flex flex-col justify-center">
+      <div className="text-center">
+        <Image src={teamwork} alt="bg" width="550px" height="390px" />
       </div>
-      <SplashTextContainer>
-        <Splashtext>Plan your tasks</Splashtext>
-        <p>With Sushi it’s more than work. It’s a way of working together.</p>
-      </SplashTextContainer>
-    </Slideshow>
+      <div className="text-center font-mono">
+        <h1 className="text-black text-6xl font-bold leading-relaxed">
+          Plan your tasks
+        </h1>
+        <p className="text-[#373737] leading-tight text-lg">
+          With Sushi it’s more than work. It’s a way of working together.
+        </p>
+      </div>
+    </div>
   );
 };
 
