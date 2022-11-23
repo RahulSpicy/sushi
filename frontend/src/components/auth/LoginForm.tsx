@@ -74,39 +74,27 @@ const LoginForm = () => {
       />
 
       {userName.trim() !== "" && userPassword.trim() !== "" ? (
-        <Button
-          variant="contained"
-          color="primary"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded mx-auto my-6 w-[60%] tracking-wider font-mono"
           type="submit"
-          style={{
-            margin: "2.5em auto",
-            width: "60%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Login
-        </Button>
+        </button>
       ) : (
-        <Button
-          variant="contained"
-          color="secondary"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded opacity-50 cursor-not-allowed mx-auto my-6 w-[60%] tracking-wider font-mono"
           disabled
-          style={{
-            margin: "2.5em auto",
-            width: "60%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Login
-        </Button>
+        </button>
       )}
       {errmsgs.err ? (
         <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          <Alert
+            onClose={handleClose}
+            severity="error"
+            sx={{ width: "100%", marginLeft: "85px", marginBottom: "60px" }}
+          >
             {errmsgs.msgs}
           </Alert>
         </Snackbar>

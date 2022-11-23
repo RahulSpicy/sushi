@@ -54,7 +54,7 @@ const RegisterForm = () => {
     }
   };
 
-  const capitalize = (s) => {
+  const capitalize = (s: string) => {
     return s[0].toUpperCase() + s.slice(1).toLowerCase();
   };
 
@@ -148,36 +148,19 @@ const RegisterForm = () => {
       email.trim() !== "" &&
       firstName.trim() !== "" &&
       lastName.trim() !== "" ? (
-        <Button
-          variant="contained"
-          color="primary"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded mx-auto my-4 w-[60%] tracking-wider font-mono"
           type="submit"
-          style={{
-            margin: "1em auto",
-            width: "60%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Register
-        </Button>
+        </button>
       ) : (
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded opacity-50 cursor-not-allowed mx-auto my-4 w-[60%] tracking-wider font-mono"
           disabled
-          style={{
-            margin: "1em auto",
-            width: "60%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Register
-        </Button>
+        </button>
       )}
 
       {errmsgs.err
@@ -185,7 +168,7 @@ const RegisterForm = () => {
             <Alert
               key={m}
               severity="error"
-              sx={{ width: "80%", marginLeft: "30px" }}
+              sx={{ width: "80%", marginLeft: "60px", marginBottom: "5px" }}
             >
               {capitalize(errmsgs.msgs[m].toString())}
             </Alert>
