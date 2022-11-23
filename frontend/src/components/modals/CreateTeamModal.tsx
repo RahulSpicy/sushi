@@ -20,26 +20,6 @@ const CardContainer = styled(Box)`
   padding: 5px;
 `;
 
-const CloseContainer = styled.div`
-  display: flex;
-`;
-
-const FormContainer = styled.div`
-  flex: 1;
-  padding: 0 1.5em 1.5em 1.5em;
-`;
-
-const Title = styled.p`
-  font-weight: 600;
-  font-size: 1.5rem;
-  margin-bottom: 0.75em;
-`;
-
-const SubTitle = styled.p`
-color: #838282
-margin-bottom: 1.5em;
-`;
-
 const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   setOpen,
   handleClose,
@@ -48,22 +28,24 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   return (
     <Modal open={setOpen} onClose={handleClose}>
       <CardContainer>
-        <CloseContainer>
+        <div className="flex">
           <IconButton
             sx={{ height: "30px", width: "30px", marginLeft: "auto" }}
             onClick={handleClose}
           >
             <CloseIcon sx={{ fontSize: "20px" }} />
           </IconButton>
-        </CloseContainer>
+        </div>
 
-        <FormContainer>
-          <Title>Start a project</Title>
-          <SubTitle>
+        <div className="flex-1 pb-4 pr-4 pl-4">
+          <h1 className="font-mono text-2xl font-semibold mb-1">
+            Start a project
+          </h1>
+          <p className="font-mono mb-5 text-gray-600">
             Team up without the chaos! Build the workflow you want.
-          </SubTitle>
+          </p>
           <CreateTeamForm addProject={addProject} handleClose={handleClose} />
-        </FormContainer>
+        </div>
       </CardContainer>
     </Modal>
   );

@@ -1,5 +1,4 @@
-import styled from "@emotion/styled";
-import { Button, TextareaAutosize } from "@mui/material";
+import { TextareaAutosize } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { authAxios } from "../../utils/authAxios";
 import { backendUrl } from "../../utils/const";
@@ -9,13 +8,6 @@ type FormData = {
   description: string;
   members: string;
 };
-
-const Label = styled.label`
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  margin-bottom: 0.3em;
-`;
 
 interface CreateTeamFormProps {
   addProject: any;
@@ -56,74 +48,64 @@ const CreateTeamForm = ({ addProject, handleClose }: CreateTeamFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Label htmlFor="name">Project Name</Label>
+      <label htmlFor="name" className="block font-medium font-mono mb-1">
+        Project Name
+      </label>
       <TextareaAutosize
         {...register("title")}
         required
         placeholder="The Boys"
         style={{
           padding: "0.5em",
-          width: "98%",
+          width: "100%",
           marginBottom: "1em",
           resize: "none",
         }}
       />
-      <Label htmlFor="description">Project Description</Label>
+      <label htmlFor="description" className="block font-medium font-mono mb-1">
+        Project Description
+      </label>
+
       <TextareaAutosize
         {...register("description")}
-        placeholder="Get your members on board with a few words about your project"
+        placeholder="Get your members on board with a few words about your project."
         style={{
           resize: "none",
-          width: "98%",
+          width: "100%",
           height: "100px",
           padding: "0.5em",
           marginBottom: "1em",
         }}
       />
+      <label htmlFor="members" className="block font-medium font-mono mb-1">
+        Invite Members
+      </label>
 
-      <Label htmlFor="members">Invite Members</Label>
       <TextareaAutosize
         {...register("members")}
         placeholder="Type in username or email"
         style={{
           padding: "0.5em",
-          width: "98%",
+          width: "100%",
           marginBottom: "1em",
           resize: "none",
         }}
       />
 
       {titleValue.trim() !== "" ? (
-        <Button
-          variant="contained"
-          color="primary"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded w-full tracking-wider font-mono"
           type="submit"
-          style={{
-            display: "block",
-            width: "100%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Create Project
-        </Button>
+        </button>
       ) : (
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit"
+        <button
+          className="bg-black text-white font-semibold text-xl py-3 px-4 rounded opacity-50 cursor-not-allowed w-full tracking-wider font-mono"
           disabled
-          style={{
-            display: "block",
-            width: "100%",
-            textAlign: "center",
-            padding: "0.85em 2em",
-            borderRadius: "3px",
-          }}
         >
           Create Project
-        </Button>
+        </button>
       )}
     </form>
   );
