@@ -6,20 +6,16 @@ import {
   AppBar,
   Autocomplete,
   Badge,
-  Button,
   Divider,
   IconButton,
   InputAdornment,
   TextField,
   Toolbar,
-  Typography,
 } from "@mui/material";
-import Image from "next/image";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import globalContext from "../../context/globalContext";
 import useAxiosGet from "../../hooks/useAxiosGet";
-import logo from "../../images/logo.png";
 import MemberListItem from "../boards/MemberListItem";
 import NotificationsModal from "../modals/NotificationsModal";
 
@@ -55,16 +51,17 @@ const Header = () => {
   return (
     <AppBar position="static" color="transparent" elevation={1}>
       <Toolbar style={{ justifyContent: "space-between" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Button style={{ color: "gray", marginRight: "25px" }} disableRipple>
-            <DashboardOutlinedIcon style={{ marginRight: "3px" }} />
-            Boards
-          </Button>
+        <div className="flex items-center">
+          <div className="flex flex-row items-center">
+            <DashboardOutlinedIcon />
+            <Link href="/">
+              <h1 className="font-medium text-2xl font-mono ml-3 cursor-pointer">
+                Sushi
+              </h1>
+            </Link>
+          </div>
+        </div>
+        <div className="flex items-center ml-60">
           <Autocomplete
             freeSolo
             disableClearable
@@ -89,37 +86,11 @@ const Header = () => {
             )}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            paddingRight: "25px",
-            paddingLeft: "5px",
-          }}
-        >
-          <Link href="/">
-            <Image src={logo} alt="logo" width={30} height={30} />
-          </Link>
-          <Typography
-            variant="h6"
-            marginLeft={1}
-            fontWeight={500}
-            letterSpacing={1}
-            color="gray"
-          >
-            SUSHI
-          </Typography>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <div className="flex items-center">
           <MemberListItem user={authUser} header="true" />
-          <Typography ml={1} fontSize="15px" color="gray">
+          <h1 className="ml-1 font-mono">
             Hello, {authUser.full_name.replace(/ .*/, "")}
-          </Typography>
+          </h1>
           <IconButton
             sx={{ marginLeft: "40px", marginRight: "20px" }}
             onClick={handleClick}

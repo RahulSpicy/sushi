@@ -10,24 +10,18 @@ const hashName = (str: string) => {
   return res + 1;
 };
 
-const colors = ["red", "green", "blue"];
+const colors = ["red", "teal", "blue", "pink"];
 
-const getNameColor = (name) => {
+const getNameColor = (name: string) => {
   return colors[hashName(name) % colors.length];
 };
 
-const MemberListItem = ({ user, header }) => {
+const MemberListItem = ({ user, header }: any) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "5px",
-      }}
-    >
+    <div className="flex items-center p-[5px]">
       {user.profile_pic ? (
         <Avatar
-          variant="square"
+          variant="circular"
           src={`${backendUrl}${user.profile_pic}`}
           sx={{
             width: 35,
@@ -36,7 +30,7 @@ const MemberListItem = ({ user, header }) => {
         />
       ) : (
         <Avatar
-          variant="square"
+          variant="circular"
           sx={{
             bgcolor: `${getNameColor(user.full_name)}`,
             width: 35,
