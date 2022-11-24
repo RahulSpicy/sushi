@@ -1,6 +1,5 @@
-import styled from "@emotion/styled";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, IconButton, Modal } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import CreateTeamForm from "./CreateTeamForm";
 
@@ -9,17 +8,6 @@ interface CreateTeamModalProps {
   handleClose: (open: boolean) => void;
 }
 
-const CardContainer = styled(Box)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 45%;
-  background-color: white;
-  border-radius: 5px;
-  padding: 5px;
-`;
-
 const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   setOpen,
   handleClose,
@@ -27,7 +15,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   const { addItem: addProject } = useAxiosGet("/projects/");
   return (
     <Modal open={setOpen} onClose={handleClose}>
-      <CardContainer>
+      <div className="absolute top-1/2 left-1/2 w-[45%] bg-white rounded p-1 transform -translate-x-1/2 -translate-y-1/2">
         <div className="flex">
           <IconButton
             sx={{ height: "30px", width: "30px", marginLeft: "auto" }}
@@ -46,7 +34,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
           </p>
           <CreateTeamForm addProject={addProject} handleClose={handleClose} />
         </div>
-      </CardContainer>
+      </div>
     </Modal>
   );
 };

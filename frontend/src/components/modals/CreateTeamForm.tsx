@@ -49,18 +49,14 @@ const CreateTeamForm = ({ addProject, handleClose }: CreateTeamFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="name" className="block font-medium font-mono mb-1">
-        Project Name
+        Project Name <span className="text-red-500">*</span>
       </label>
+
       <TextareaAutosize
         {...register("title")}
         required
         placeholder="The Boys"
-        style={{
-          padding: "0.5em",
-          width: "100%",
-          marginBottom: "1em",
-          resize: "none",
-        }}
+        className="w-full p-2 mb-3 resize-none border border-gray-300 rounded font-mono"
       />
       <label htmlFor="description" className="block font-medium font-mono mb-1">
         Project Description
@@ -69,13 +65,8 @@ const CreateTeamForm = ({ addProject, handleClose }: CreateTeamFormProps) => {
       <TextareaAutosize
         {...register("description")}
         placeholder="Get your members on board with a few words about your project."
-        style={{
-          resize: "none",
-          width: "100%",
-          height: "100px",
-          padding: "0.5em",
-          marginBottom: "1em",
-        }}
+        className="w-full p-2 mb-3 resize-none border border-gray-300 rounded font-mono"
+        minRows={3}
       />
       <label htmlFor="members" className="block font-medium font-mono mb-1">
         Invite Members
@@ -84,12 +75,7 @@ const CreateTeamForm = ({ addProject, handleClose }: CreateTeamFormProps) => {
       <TextareaAutosize
         {...register("members")}
         placeholder="Type in username or email"
-        style={{
-          padding: "0.5em",
-          width: "100%",
-          marginBottom: "1em",
-          resize: "none",
-        }}
+        className="w-full p-2 mb-5 resize-none border border-gray-300 rounded font-mono"
       />
 
       {titleValue.trim() !== "" ? (
