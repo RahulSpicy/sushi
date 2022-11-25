@@ -1,4 +1,4 @@
-import { Alert, Button, Input, TextField } from "@mui/material";
+import { Alert, TextField } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -66,13 +66,7 @@ const RegisterForm = () => {
         placeholder="First Name"
         required
         {...register("first_name")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-1"
       />
       <TextField
         type="text"
@@ -80,13 +74,7 @@ const RegisterForm = () => {
         placeholder="Last Name"
         required
         {...register("last_name")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-2"
       />
       <TextField
         type="text"
@@ -94,40 +82,23 @@ const RegisterForm = () => {
         placeholder="Username"
         required
         {...register("username")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-2"
       />
 
-      <Input
-        type="file"
-        {...register("profile_pic")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
-        onChange={handleImageChange}
-      />
+      <button className="w-[60%] h-14 my-2 p-3 border border-gray-300 rounded">
+        <input
+          type="file"
+          {...register("profile_pic")}
+          onChange={handleImageChange}
+        />
+      </button>
       <TextField
         type="email"
         label="Email"
         placeholder="Email"
         required
         {...register("email")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-2"
       />
       <TextField
         type="password"
@@ -135,13 +106,7 @@ const RegisterForm = () => {
         placeholder="Password"
         required
         {...register("password")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.2em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-2"
       />
       {userName.trim() !== "" &&
       passw.trim() !== "" &&

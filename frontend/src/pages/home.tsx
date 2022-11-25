@@ -1,10 +1,9 @@
-import styled from "@emotion/styled";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 import Head from "next/head";
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -13,33 +12,6 @@ import AddBoardModal from "../components/modals/AddBoardModal";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
 import useAxiosGet from "../hooks/useAxiosGet";
 import { filterBoards } from "../utils/board";
-
-const HomeWrapper = styled.div`
-  display: flex;
-  background-color: offwhite;
-  padding: 55px 120px;
-  height: 100%;
-`;
-
-const HomeSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25em;
-`;
-
-const HomeBoards = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 1em;
-`;
-
-const BoardContainer = styled.div`
-  width: 900px;
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 1em;
-`;
 
 const Home = () => {
   const [boardProject, setBoardProject] = useState(0); // If 0, we are making a personal board. Else, making board for project with given ID
@@ -63,23 +35,23 @@ const Home = () => {
   if (!boards) return null;
 
   return (
-    <HomeWrapper>
+    <div className="flex max-h-screen bg-white px-28 py-12">
       <Head>
         <title>Boards | Sushi</title>
       </Head>
       <HomeSidebar projects={projects || []} />
-      <div style={{ flex: 5, marginLeft: "50px" }}>
+      <div className="flex-[5] ml-12">
         {starredBoards.length !== 0 && (
           <>
-            <HomeSection>
-              <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center">
                 <StarBorderIcon />
-                <Typography fontWeight={400} variant="h6" ml={1}>
+                <h1 className="text-xl font-normal font-mono ml-2">
                   Starred Boards
-                </Typography>
+                </h1>
               </div>
-            </HomeSection>
-            <HomeBoards>
+            </div>
+            <div className="flex flex-wrap mb-4">
               {starredBoards.map((board) => (
                 <HomeBoard
                   board={board}
@@ -87,38 +59,38 @@ const Home = () => {
                   key={uuidv4()}
                 />
               ))}
-            </HomeBoards>
+            </div>
           </>
         )}
         {(recentlyViewedBoards || []).length !== 0 &&
           starredBoards.length === 0 && (
             <>
-              <HomeSection>
-                <div style={{ display: "flex", alignItems: "center" }}>
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center">
                   <AccessTimeOutlinedIcon />
-                  <Typography fontWeight={400} variant="h6" ml={1}>
+                  <h1 className="text-xl font-normal font-mono ml-2">
                     Recently Viewed
-                  </Typography>
+                  </h1>
                 </div>
-              </HomeSection>
-              <HomeBoards>
-                {recentlyViewedBoards.map((board) => (
+              </div>
+              <div className="flex flex-wrap mb-4">
+                {recentlyViewedBoards.map((board: any) => (
                   <HomeBoard
                     board={board}
                     replaceBoard={replaceBoard}
                     key={uuidv4()}
                   />
                 ))}
-              </HomeBoards>
+              </div>
             </>
           )}
 
-        <HomeSection>
-          <div style={{ display: "flex", alignItems: "center" }}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center">
             <PersonOutlineOutlinedIcon />
-            <Typography fontWeight={400} variant="h6" ml={1}>
+            <h1 className="text-xl font-normal font-mono ml-2">
               Personal Boards
-            </Typography>
+            </h1>
           </div>
 
           <IconButton onClick={handleOpen}>
@@ -130,8 +102,8 @@ const Home = () => {
             addBoard={addBoard}
             project={boardProject}
           />
-        </HomeSection>
-        <HomeBoards>
+        </div>
+        <div className="flex flex-wrap mb-4">
           {userBoards.map((board) => (
             <HomeBoard
               board={board}
@@ -139,33 +111,33 @@ const Home = () => {
               key={uuidv4()}
             />
           ))}
-        </HomeBoards>
+        </div>
         {projectBoards.map((project) => (
           <React.Fragment key={uuidv4()}>
-            <HomeSection>
-              <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center">
                 <PeopleAltOutlinedIcon />
-                <Typography fontWeight={400} variant="h6" ml={1}>
+                <h1 className="text-xl font-normal font-mono ml-2">
                   {project.title}
-                </Typography>
+                </h1>
               </div>
               <IconButton>
                 <AddOutlinedIcon />
               </IconButton>
-            </HomeSection>
-            <BoardContainer>
-              {project.boards.map((board) => (
+            </div>
+            <div className="flex flex-wrap mb-4 w-[900px]">
+              {project.boards.map((board: any) => (
                 <HomeBoard
                   board={board}
                   replaceBoard={replaceBoard}
                   key={uuidv4()}
                 />
               ))}
-            </BoardContainer>
+            </div>
           </React.Fragment>
         ))}
       </div>
-    </HomeWrapper>
+    </div>
   );
 };
 

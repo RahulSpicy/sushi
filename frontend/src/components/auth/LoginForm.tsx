@@ -1,4 +1,4 @@
-import { Alert, Button, Snackbar, TextField } from "@mui/material";
+import { Alert, Snackbar, TextField } from "@mui/material";
 import axios from "axios";
 import { useContext, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -52,13 +52,7 @@ const LoginForm = () => {
         placeholder="Username"
         required
         {...register("username")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-          zIndex: "1",
-          marginBottom: "1.25em",
-        }}
+        className="w-[60%] h-6 mb-10 mt-1"
       />
       <TextField
         type="password"
@@ -66,11 +60,7 @@ const LoginForm = () => {
         placeholder="Password"
         required
         {...register("password")}
-        style={{
-          margin: "0.5em auto",
-          height: "3em",
-          width: "60%",
-        }}
+        className="w-[60%] h-6 mt-2 mb-8"
       />
 
       {userName.trim() !== "" && userPassword.trim() !== "" ? (

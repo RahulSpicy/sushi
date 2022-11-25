@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import NewspaperSharpIcon from "@mui/icons-material/NewspaperSharp";
-import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import SquareFootSharpIcon from "@mui/icons-material/SquareFootSharp";
 import {
   Box,
@@ -14,10 +13,10 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import CreateTeamModal from "../modals/CreateTeamModal";
-import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import CreateTeamModal from "../modals/CreateTeamModal";
 
 interface HomeSidebarProps {
   projects: any[];
@@ -49,7 +48,7 @@ const HomeSidebar = ({ projects }: HomeSidebarProps) => {
               <ListItemIcon>
                 <SquareFootSharpIcon />
               </ListItemIcon>
-              <ListItemText primary="Templates" />
+              <ListItemText primary="Calendar" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -76,9 +75,6 @@ const HomeSidebar = ({ projects }: HomeSidebarProps) => {
             <Link href={`/p/${project.id}`} key={uuidv4()}>
               <ListItem disablePadding>
                 <ListItemButton>
-                  <ListItemIcon>
-                    <PeopleAltOutlinedIcon />
-                  </ListItemIcon>
                   <ListItemText primary={project.title} />
                 </ListItemButton>
               </ListItem>
